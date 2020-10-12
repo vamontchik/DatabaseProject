@@ -1,0 +1,39 @@
+{
+    "courses":[
+        {
+            "Subject": "CS",
+            "Number": "411",
+            "Credits": 3,
+            "avgGPA": 1,
+            "Instructor": "Abdu"
+        },
+        {
+            "Subject": "CS",
+            "Number": "413",
+            "Credits": 4,
+            "avgGPA": 2,
+            "Instructor": "Jackson, Marlene"
+        },
+        {
+            "Subject": "CS",
+            "Number": "427",
+            "Credits": 2,
+            "avgGPA": 3.5,
+            "Instructor": "Jackson, Tim"
+        },
+        {
+            "Subject": "PS",
+            "Number": "101",
+            "Credits": 3,
+            "avgGPA": 4,
+            "Instructor": "2 Chainz"
+        },
+        {
+            "Subject": "AAS", 
+            "Number": "102",
+            "Credits": 3,
+            "avgGPA": 3.7,
+            "Instructor": "Kanye"
+        }
+    ]
+}

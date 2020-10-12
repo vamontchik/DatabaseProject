@@ -1,0 +1,7 @@
+#scheduleCont {
+    display: flex;
+}
+#bigCont {
+    display: block;
+    margin-left: 150px;
+}
