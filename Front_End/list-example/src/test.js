@@ -97,8 +97,8 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: 'name', numeric: false, disablePadding: true, label: 'Course Name' },
-  { id: 'number', numeric: true, disablePadding: false, label: 'Course Number' },
-  { id: 'credits', numeric: true, disablePadding: false, label: 'Credits' },
+  { id: 'number', numeric: true, disablePadding: true, label: 'Course Number' },
+  { id: 'credits', numeric: true, disablePadding: true, label: 'Credits' },
   { id: 'avgGPA', numeric: true, disablePadding: false, label: 'Average GPA' },
   { id: 'instructor', numeric: false, disablePadding: false, label: 'Instructor' },
 ];
@@ -123,7 +123,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={'right'}
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -387,13 +387,13 @@ export default function EnhancedTable() {
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <TableCell id={labelId} align="right" scope="row" style={{paddingRight:'0', marginLeft:'0px'}}>
                         {row.name}
                       </TableCell>
                       <TableCell align="right">{row.number}</TableCell>
                       <TableCell align="right">{row.credits}</TableCell>
                       <TableCell align="right">{row.avgGPA}</TableCell>
-                      <TableCell align="left">{row.instructor}</TableCell>
+                      <TableCell align="right">{row.instructor}</TableCell>
                     </TableRow>
                   );
                 })}
