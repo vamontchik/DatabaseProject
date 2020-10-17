@@ -34,6 +34,34 @@
             "Credits": 3,
             "avgGPA": 3.7,
             "Instructor": "Kanye"
+        },
+        {
+            "Subject": "POL", 
+            "Number": "102",
+            "Credits": 3,
+            "avgGPA": 3.7,
+            "Instructor": "Kanye"
+        },
+        {
+            "Subject": "LANG", 
+            "Number": "102",
+            "Credits": 3,
+            "avgGPA": 3.7,
+            "Instructor": "Kanye"
+        },
+        {
+            "Subject": "POL", 
+            "Number": "102",
+            "Credits": 3,
+            "avgGPA": 3.2,
+            "Instructor": "Mr. West"
+        },
+        {
+            "Subject": "KS", 
+            "Number": "406",
+            "Credits": 5,
+            "avgGPA": 2,
+            "Instructor": "Ms. Tia"
         }
     ]
 }
