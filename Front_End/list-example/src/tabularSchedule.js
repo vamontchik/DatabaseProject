@@ -1,6 +1,6 @@
-import React, {useEffect, useState, useRef} from 'react'
-import {FormControlLabel, Switch, Menu, Button, MenuItem, List, ListItem, ListItemText, Drawer} from '@material-ui/core'
-import {DataGrid, GridApi} from '@material-ui/data-grid'
+import React, {useEffect, useState} from 'react'
+import {FormControlLabel, Switch} from '@material-ui/core'
+import {DataGrid} from '@material-ui/data-grid'
 import JSONFile from './courseListExample.json'
 
 import './tabular.css'

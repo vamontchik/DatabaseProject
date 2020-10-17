@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import JSONFile from './courseListExample.json'
 import {IconButton, TableCell, Table, TableHead, Checkbox, TableRow, TableSortLabel, Toolbar, Tooltip, Switch, TableBody, Paper, TablePagination, FormControlLabel, TableContainer} from '@material-ui/core'
 import FilterListIcon from '@material-ui/icons/FilterList'

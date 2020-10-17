@@ -276,6 +276,7 @@ export default function EnhancedTable() {
             }
         }
         setHidden(hiddenCount)
+        // eslint-disable-next-line
     }, [courseName, fromNum, toNum, avgGPAGreaterThan])
 
 

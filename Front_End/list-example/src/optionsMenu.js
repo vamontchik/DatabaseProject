@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {FormControlLabel, Divider, makeStyles, Switch, Menu, Button, MenuItem, List, ListItem, ListItemText, Drawer} from '@material-ui/core'
+import {Divider, makeStyles, Menu, Button, MenuItem, List, ListItem, ListItemText, Drawer} from '@material-ui/core'
 import {FormControl} from 'react-bootstrap'
 
 import DataTable from './tabularSchedule.js'

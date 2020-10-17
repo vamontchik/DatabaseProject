@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Button, Collapse, Drawer, List, ListItem, ListItemText, Menu, MenuItem, Divider} from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -231,7 +231,8 @@ function Schedule(props) {
     if (props.sort) {
         courseList.sort((a, b) => (a[props.sortType] > b[props.sortType]) ? props.direction : -props.direction)
     }
-
+    
+    // eslint-disable-next-line
     const courses = courseList.map((item) => {
         if (item.Subject.startsWith(props.Subject) && item.Number >= props.from && item.Number <= props.to && item.avgGPA >= props.avgGPA) return (
         <ScheduleItem 

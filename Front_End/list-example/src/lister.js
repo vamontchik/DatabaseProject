@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {FormControl} from 'react-bootstrap'
 import JSONFile from './courseListExample.json';
 import './lister.css'
