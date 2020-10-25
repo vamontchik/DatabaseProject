@@ -4,3 +4,5 @@ services:
     image: mysql:8.0.22
     environment:
       - MYSQL_ROOT_PASSWORD=example_pw
+    ports:
+      - "3306:3306"

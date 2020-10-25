@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS course_db;
+
 CREATE DATABASE course_db;
 
 USE course_db;
@@ -13,14 +15,13 @@ CREATE TABLE Gen_Ed (
   `Number` INT(10) UNSIGNED NOT NULL,
 	`Subject` VARCHAR(20) NOT NULL,
 	CONSTRAINT `pk_Gen_Ed` PRIMARY KEY(`Subject`, `Number`)
-
-)
+);
 
 CREATE TABLE Instructor (
 	`Instructor_Name` VARCHAR(255) NOT NULL,
   `Rating` FLOAT NOT NULL,
 	CONSTRAINT `pk_Instructor` PRIMARY KEY(`Instructor_Name`)
-)
+);
 
 CREATE TABLE Grade_Distribution (
 	`W` INT(10) UNSIGNED NOT NULL,
@@ -39,8 +40,9 @@ CREATE TABLE Grade_Distribution (
   `A_Plus` INT(10) UNSIGNED NOT NULL,
 	`Subject` VARCHAR(20) NOT NULL,
   `Instructor_Name` VARCHAR(255) NOT NULL,
+  `Number` INT(10) UNSIGNED NOT NULL,
 	CONSTRAINT `pk_Grade_Distribution` PRIMARY KEY(`Instructor_Name`, `Subject`, `Number`)
-)
+);
 
 CREATE TABLE Course_Section (
 	`Year` INT(10) UNSIGNED NOT NULL,
@@ -52,7 +54,4 @@ CREATE TABLE Course_Section (
 	`Subject` VARCHAR(20) NOT NULL,
   `Instructor_Name` VARCHAR(255) NOT NULL,
 	CONSTRAINT `pk_Course_Section` PRIMARY KEY(`Instructor_Name`, `Subject`, `Number`)
-  FOREIGN KEY (`Subject`, `Number`) REFERENCES Gen_Ed(`Subject`, `Number`)
-  FOREIGN KEY (`Instructor_Name`) REFERENCES Instructor(`Instructor_Name`)
-  FOREIGN KEY (`Instructor_Name`, `Subject`, `Number`) REFERENCES Grade_Distribution(`Instructor_Name`, `Subject`, `Number`)
-)
+);
