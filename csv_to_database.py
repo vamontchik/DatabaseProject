@@ -40,7 +40,10 @@ def merge_rows_into_one(rows):
 
 def merge(csv_data, file):
     if file == 'gen_ed':
-        # gen_ed rows are unique ! so we don't need to do anything...
+        # gen_ed rows are unique ! so we only need to pop the row with column names
+
+        csv_data.pop(0)
+
         return csv_data
 
     elif file == 'gpa':
@@ -83,13 +86,18 @@ def read_from_csv_files():
     return gen_ed_data, gpa_data
 
 
+def write_to_csv_file(data, file_name):
+    with open(file_name, 'w+', newline='') as f:
+        csv_writer = csv.writer(f, delimiter=',')
+        csv_writer.writerows(data)
+
+
 def main():
     gen_ed_data, gpa_data = read_from_csv_files()
     merged_gen_ed_data = merge(gen_ed_data, 'gen_ed')
     merged_gpa_data = merge(gpa_data, 'gpa')
-
-    print(merged_gen_ed_data)
-    print(merged_gpa_data)
+    write_to_csv_file(merged_gen_ed_data, 'csv_data/gened_fall_2019_merged.csv')
+    write_to_csv_file(merged_gpa_data, 'csv_data/gpa_for_fall2019_merged.csv')
 
 
 if __name__ == '__main__':
