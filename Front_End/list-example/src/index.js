@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 //import Wrapper from './optionsMenu'
 //import Manual from './manualTabularSchedule'
 import Test from './test'
-import App from './App'
+import Admin from './AdminComponent/Admin'
 
 import {
   BrowserRouter as Router,
@@ -35,7 +35,7 @@ function Main() {
           <Test />
         </Route>
         <Route path="/admin">
-          <App />
+          <Admin />
         </Route>
         <Route>
           <Home path="/"/>
@@ -52,4 +52,3 @@ function Home() {
 ReactDOM.render(<Main />,
   document.getElementById('root')
 );
-

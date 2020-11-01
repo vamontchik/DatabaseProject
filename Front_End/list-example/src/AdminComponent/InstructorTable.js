@@ -22,6 +22,10 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import axios from 'axios'
 import Alert from '@material-ui/lab/Alert';
 
+// boilerplate code from the documentation
+// https://material-table.com/#/docs/get-started
+// and https://levelup.gitconnected.com/react-material-table-crud-operations-with-restful-api-data-ca1af738d3c5
+
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -46,40 +50,12 @@ const api = axios.create({
   baseURL: `https://reqres.in/api`
 })
 
-function App() {
+function InstructorTable() {
 
   var columns = [
     {title: "id", field: "id", hidden: true},
-    {title: "Department", field: "first_name"},
-    {title: "Number", field: "last_name"},
-    {title: "Title", field: "last_name"},
     {title: "Instructor Name", field: "last_name"},
-    {title: "Instructor Rating", field: "last_name"},
-    {title: "Term", field: "last_name"},
-    {title: "Year", field: "last_name"},
-    {title: "NumStudents", field: "last_name"},
-    {title: "GenEdID", field: "last_name"},
-    {title: "ACP", field: "last_name"},
-    {title: "NAT", field: "last_name"},
-    {title: "CS", field: "last_name"},
-    {title: "QR", field: "last_name"},
-    {title: "HUM", field: "last_name"},
-    {title: "SBS", field: "last_name"},
-    {title: "AvgGpa", field: "last_name"},
-    {title: "A+", field: "last_name"},
-    {title: "A", field: "last_name"},
-    {title: "A-", field: "last_name"},
-    {title: "B+", field: "last_name"},
-    {title: "B", field: "last_name"},
-    {title: "B-", field: "last_name"},
-    {title: "C+", field: "last_name"},
-    {title: "C", field: "last_name"},
-    {title: "C-", field: "last_name"},
-    {title: "D+", field: "last_name"},
-    {title: "D", field: "last_name"},
-    {title: "D-", field: "last_name"},
-    {title: "F", field: "last_name"},
-    {title: "W", field: "last_name"},
+    {title: "Rating", field: "last_name"}
   ]
   const [data, setData] = useState([]); //table data
 
@@ -214,8 +190,8 @@ function App() {
               </Alert>
             }
           </div>
-            <MaterialTable
-              title= "Admin View"
+            <MaterialTable style={{ border: "2px solid black" }}
+              title= "Instructor"
               columns={columns}
               data={data}
               icons={tableIcons}
@@ -241,7 +217,7 @@ function App() {
               }}
               options={{
                 headerStyle: {
-                  backgroundColor: '#ADD8E6'
+                  backgroundColor: '#89ED96'
                 },
                 searchFieldStyle: {
                   border: "1px solid black",
@@ -260,4 +236,4 @@ function App() {
   );
 }
 
-export default App;
+export default InstructorTable;
