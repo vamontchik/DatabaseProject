@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 //import List from './lister';
 //import Schedule from './schedule';
 //import Tabler from './tabularSchedule'
 //import Wrapper from './optionsMenu'
 //import Manual from './manualTabularSchedule'
-import Test from './test'
-import Admin from './AdminComponent/Admin'
-
+import Test from './test';
+import Admin from './AdminComponent/Admin';
+import CourseDetail from './CourseDetail';
 import {
   BrowserRouter as Router,
   Switch,
@@ -28,6 +29,9 @@ function Main() {
         <li>
           <Link to="/admin">Admin</Link>
         </li>
+        <li>
+          <Link to="/course_detail_test">Course Detail Test</Link>
+        </li>
       </ul>
 
       <Switch>
@@ -37,9 +41,13 @@ function Main() {
         <Route path="/admin">
           <Admin />
         </Route>
+        <Route path="/course_detail_test">
+          <CourseDetail />
+        </Route>
         <Route>
           <Home path="/"/>
         </Route>
+
       </Switch>
     </Router>
   )
