@@ -1,9 +1,9 @@
 import React from 'react';
 import './Admin.css';
-import CourseSectionTable from './CourseSectionTable';
-import GenEdTable from './GenEdTable';
-import GradeDistributionTable from './GradeDistributionTable';
-import InstructorTable from './InstructorTable';
+// import CourseSectionTable from './CourseSectionTable';
+// import GenEdTable from './GenEdTable';
+// import GradeDistributionTable from './GradeDistributionTable';
+// import InstructorTable from './InstructorTable';
 import GeneralDataTable from '../GeneralDataTable'
 import colJSON from '../columns.json'
 

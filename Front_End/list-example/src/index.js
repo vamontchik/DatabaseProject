@@ -160,7 +160,7 @@ function Main() {
           <Admin editable={true} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data}/>
         </Route>
         <Route path="/course_detail_test">
-          <CourseDetail />
+          {/* <CourseDetail /> */}
         </Route>
         <Route>
           <Home path="/"/>
