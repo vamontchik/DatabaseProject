@@ -157,10 +157,10 @@ function Main() {
 
       <Switch>
         <Route path="/viewer">
-          <GeneralDataTable title={"Course Viewer"} editable={false} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data} col={colJSON.GradeDistributionTable}/>
+          <GeneralDataTable title={"Course Viewer"} selection={true} editable={false} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data} col={colJSON.GradeDistributionTable}/>
         </Route>
         <Route path="/admin">
-          <Admin editable={true} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data}/>
+          <Admin editable={true} selection={false} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data}/>
         </Route>
         <Route path="/course_detail_test">
           <CourseDetail />
