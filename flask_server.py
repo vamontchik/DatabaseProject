@@ -40,7 +40,7 @@ def create_endpoint():
     pass # TODO: impl
 
 
-@app.route("/add", methods=["POST"])
+@app.route("/update", methods=["POST"])
 def add_endpoint():
     pass # TODO: impl
 
