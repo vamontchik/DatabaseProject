@@ -147,6 +147,9 @@ function Main() {
         <li>
           <Link to="/admin" onClick={logState}>Admin</Link>
         </li>
+        <li>
+          <Link to="/course_detail_test">Course Detail Test</Link>
+        </li>
       </ul>
 
       <Switch>
@@ -156,9 +159,13 @@ function Main() {
         <Route path="/admin">
           <Admin editable={true} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data}/>
         </Route>
+        <Route path="/course_detail_test">
+          <CourseDetail />
+        </Route>
         <Route>
           <Home path="/"/>
         </Route>
+
       </Switch>
     </Router>
   )
