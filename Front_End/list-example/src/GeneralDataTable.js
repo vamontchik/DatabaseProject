@@ -93,7 +93,9 @@ export default function GeneralDataTable(props) {
                 },
                 pageSize: 10,
                 pageSizeOptions: [10, 15, 20, 25],
-                addRowPosition: "first"
+                addRowPosition: "first",
+                grouping: true,
+                selection: props.selection
               }}
 
             />

@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import Admin from './AdminComponent/Admin'
 import GeneralDataTable from './GeneralDataTable'
 import colJSON from './columns.json'
+import CourseDetail from './CourseDetail'
 import axios from 'axios'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {
   BrowserRouter as Router,
@@ -154,13 +156,13 @@ function Main() {
 
       <Switch>
         <Route path="/viewer">
-          <GeneralDataTable title={"Course Viewer"} editable={false} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data} col={colJSON.GradeDistributionTable}/>
+          <GeneralDataTable title={"Course Viewer"} selection={true} editable={false} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data} col={colJSON.GradeDistributionTable}/>
         </Route>
         <Route path="/admin">
-          <Admin editable={true} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data}/>
+          <Admin editable={true} selection={false} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data}/>
         </Route>
         <Route path="/course_detail_test">
-          {/* <CourseDetail /> */}
+          <CourseDetail />
         </Route>
         <Route>
           <Home path="/"/>
