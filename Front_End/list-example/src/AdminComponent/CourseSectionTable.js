@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import './App.css';
 import { forwardRef } from 'react';
 import Grid from '@material-ui/core/Grid'
 
@@ -56,12 +55,14 @@ function CourseSectionTable() {
     {title: "id", field: "id", hidden: true},
     {title: "Subject", field: "first_name"},
     {title: "Number", field: "last_name"},
-    {title: "Instructor Name", field: "last_name"},
     {title: "Title", field: "last_name"},
+    {title: "Credit Hours", field: "last_name"},
     {title: "Term", field: "last_name"},
     {title: "Year", field: "last_name"},
+    {title: "Instructor Name", field: "last_name"},
     {title: "NumStudents", field: "last_name"},
     {title: "AvgGpa", field: "last_name", editable: "never"},
+    {title: "Description", field: "email"},
   ]
   const [data, setData] = useState([]); //table data
 
