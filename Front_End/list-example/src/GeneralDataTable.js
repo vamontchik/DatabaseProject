@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { forwardRef } from 'react';
 import Grid from '@material-ui/core/Grid'
 
@@ -19,6 +19,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Alert from '@material-ui/lab/Alert';
+import axios from 'axios';
 
 // boilerplate code from the documentation
 // https://material-table.com/#/docs/get-started
@@ -44,16 +45,138 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
+const api = axios.create({
+  baseURL: `https://reqres.in/api`
+})
+
 export default function GeneralDataTable(props) {
+
+  const [data, setData] = useState([]); //table data
+
+  //for error handling
+  const [iserror, setIserror] = useState(false)
+  const [errorMessages, setErrorMessages] = useState([])
+
+  useEffect(() => {
+    api.get("/users")
+        .then(res => {
+            let final_data = [...res.data.data];
+
+            // for (let i = 1000; i < 1120; i += 1) {
+            //   final_data.push({
+            //     "id": i,
+            //     "email": "george.bluth@reqres.in",
+            //     "first_name": "George" + i.toString(),
+            //     "last_name": "Bluth" + i.toString(),
+            //     "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg"
+            //     }
+            //   );
+            // }
+
+            setData(final_data);
+            //setData(res.data.data)
+         })
+         .catch(error=>{
+             console.log("Error")
+         })
+  }, [])
+
+  const handleRowUpdate = (newData, oldData, resolve) => {
+    //validation
+    let errorList = []
+    if(newData.first_name === ""){
+      errorList.push("Please enter first name")
+    }
+    if(newData.last_name === ""){
+      errorList.push("Please enter last name")
+    }
+
+    if(errorList.length < 1){
+      api.patch("/users/"+newData.id, newData)
+      .then(res => {
+        const dataUpdate = [...data];
+        const index = oldData.tableData.id;
+        dataUpdate[index] = newData;
+        setData([...dataUpdate]);
+        resolve()
+        setIserror(false)
+        setErrorMessages([])
+      })
+      .catch(error => {
+        setErrorMessages(["Update failed! Server error"])
+        setIserror(true)
+        resolve()
+
+      })
+    }else{
+      setErrorMessages(errorList)
+      setIserror(true)
+      resolve()
+
+    }
+
+  }
+
+  const handleRowAdd = (newData, resolve) => {
+    //validation
+    let errorList = []
+    if(newData.first_name === undefined){
+      errorList.push("Please enter first name")
+    }
+    if(newData.last_name === undefined){
+      errorList.push("Please enter last name")
+    }
+
+    if(errorList.length < 1){ //no error
+      api.post("/users", newData)
+      .then(res => {
+        let dataToAdd = [...data];
+        dataToAdd.push(newData);
+        setData(dataToAdd);
+        resolve()
+        setErrorMessages([])
+        setIserror(false)
+      })
+      .catch(error => {
+        setErrorMessages(["Cannot add data. Server error!"])
+        setIserror(true)
+        resolve()
+      })
+    }else{
+      setErrorMessages(errorList)
+      setIserror(true)
+      resolve()
+    }
+
+
+  }
+
+  const handleRowDelete = (oldData, resolve) => {
+
+    api.delete("/users/"+oldData.id)
+      .then(res => {
+        const dataDelete = [...data];
+        const index = oldData.tableData.id;
+        dataDelete.splice(index, 1);
+        setData([...dataDelete]);
+        resolve()
+      })
+      .catch(error => {
+        setErrorMessages(["Delete failed! Server error"])
+        setIserror(true)
+        resolve()
+      })
+  }
+
   return (
     <div className="App" style={{marginTop: "2%"}}>
       <Grid container spacing={1}>
           <Grid item xs={1}></Grid>
           <Grid item xs={10}>
           <div>
-            {props.iserror &&
+            {iserror &&
               <Alert severity="error">
-                  {props.errorMessages.map((msg, i) => {
+                  {errorMessages.map((msg, i) => {
                       return <div key={i}>{msg}</div>
                   })}
               </Alert>
@@ -62,7 +185,7 @@ export default function GeneralDataTable(props) {
             <MaterialTable style={{ border: "2px solid black" }}
               title= {props.title}
               columns={props.col.map((c) => ({...c, tableData: undefined}))}
-              data={props.data}
+              data={data}
               icons={tableIcons}
               localization={{
                 body: {
@@ -72,15 +195,15 @@ export default function GeneralDataTable(props) {
               editable={props.editable ? {
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve) => {
-                    props.handleRowUpdate(newData, oldData, resolve);
+                    handleRowUpdate(newData, oldData, resolve);
                   }),
                 onRowAdd: (newData) =>
                   new Promise((resolve) => {
-                    props.handleRowAdd(newData, resolve)
+                    handleRowAdd(newData, resolve)
                   }),
                 onRowDelete: (oldData) =>
                   new Promise((resolve) => {
-                    props.handleRowDelete(oldData, resolve)
+                    handleRowDelete(oldData, resolve)
                   }),
               } : {}}
               options={{
