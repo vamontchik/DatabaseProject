@@ -85,7 +85,7 @@ export default function GeneralDataTable(props) {
               } : {}}
               options={{
                 headerStyle: {
-                  backgroundColor: '#ADD8E6'
+                  backgroundColor: props.headerBackgroundColor
                 },
                 searchFieldStyle: {
                   border: "1px solid black",

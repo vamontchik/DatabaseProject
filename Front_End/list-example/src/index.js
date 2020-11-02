@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
-import Admin from './AdminComponent/Admin'
-import GeneralDataTable from './GeneralDataTable'
-import colJSON from './columns.json'
-import axios from 'axios'
+import Admin from './AdminComponent/Admin';
+import GeneralDataTable from './GeneralDataTable';
+import CourseDetail from './CourseDetail';
+import colJSON from './columns.json';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 
 import {
   BrowserRouter as Router,
@@ -160,7 +163,7 @@ function Main() {
           <Admin editable={true} iserror={iserror} errorMessages={errorMessages} handleRowAdd={handleRowAdd} handleRowDelete={handleRowDelete} handleRowUpdate={handleRowUpdate} data={data}/>
         </Route>
         <Route path="/course_detail_test">
-          {/* <CourseDetail /> */}
+          <CourseDetail />
         </Route>
         <Route>
           <Home path="/"/>
