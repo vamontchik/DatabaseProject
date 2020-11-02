@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {FormControlLabel, Switch} from '@material-ui/core'
 import {DataGrid} from '@material-ui/data-grid'
-import JSONFile from './courseListExample.json'
+import JSONFile from '../courseListExample.json'
 
 import './tabular.css'
 

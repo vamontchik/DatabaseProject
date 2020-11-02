@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {FormControl} from 'react-bootstrap'
-import JSONFile from './courseListExample.json';
+import JSONFile from '../courseListExample.json';
 import './lister.css'
 
 export default function LazyList() {

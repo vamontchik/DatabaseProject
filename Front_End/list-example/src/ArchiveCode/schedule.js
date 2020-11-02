@@ -3,7 +3,7 @@ import {Button, Collapse, Drawer, List, ListItem, ListItemText, Menu, MenuItem, 
 import {makeStyles} from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import JSONFile from './courseListExample.json';
+import JSONFile from '../courseListExample.json';
 import {FormControl} from 'react-bootstrap'
 import './schedule.css'
 

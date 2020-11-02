@@ -19,7 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import JSONFile from './courseListExample.json'
+import JSONFile from '../courseListExample.json'
 import {List, ListItem, ListItemText, Drawer, Divider} from '@material-ui/core'
 import {FormControl} from 'react-bootstrap'
 
@@ -234,14 +234,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EnhancedTable() {
     const style = useStyless()
-  const classes = useStyles();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('name');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [drawer, toggleDrawer] = useState(false)
+    const classes = useStyles();
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('name');
+    const [selected, setSelected] = React.useState([]);
+    const [page, setPage] = React.useState(0);
+    const [dense, setDense] = React.useState(false);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [drawer, toggleDrawer] = useState(false)
     const [courseName, setName] = useState("");
     const [fromNum, setFromNum] = useState(0);
     const [toNum, setToNum] = useState(1000);
@@ -424,6 +424,7 @@ export default function EnhancedTable() {
                 <ListItem className={style.blueBack}>
                     <ListItemText className={style.whiteText} primary="Filter Options"/>
                 </ListItem>
+                
                 <Divider />
 
                 <ListItem>

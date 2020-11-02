@@ -1,0 +1,49 @@
+{
+    "CourseSectionTable":[
+        {"title": "id", "field": "id", "hidden": true},
+        {"title": "Subject", "field": "first_name"},
+        {"title": "Number", "field": "last_name"},
+        {"title": "Instructor Name", "field": "last_name"},
+        {"title": "Title", "field": "last_name"},
+        {"title": "Term", "field": "last_name"},
+        {"title": "Year", "field": "last_name"},
+        {"title": "NumStudents", "field": "last_name"},
+        {"title": "AvgGpa", "field": "last_name", "editable": "never"}
+    ],
+    "GenEdTable":[
+        {"title": "id", "field": "id", "hidden": true},
+        {"title": "Subject", "field": "first_name"},
+        {"title": "Number", "field": "last_name"},
+        {"title": "ACP", "field": "last_name"},
+        {"title": "NAT", "field": "last_name"},
+        {"title": "CS", "field": "last_name"},
+        {"title": "QR", "field": "last_name"},
+        {"title": "HUM", "field": "last_name"},
+        {"title": "SBS", "field": "last_name"}
+    ],
+    "GradeDistributionTable":[
+        {"title": "id", "field": "id", "hidden": true},
+        {"title": "Subject", "field": "first_name"},
+        {"title": "Number", "field": "last_name"},
+        {"title": "Instructor Name", "field": "last_name"},
+        {"title": "A+", "field": "last_name"},
+        {"title": "A", "field": "last_name"},
+        {"title": "A-", "field": "last_name"},
+        {"title": "B+", "field": "last_name"},
+        {"title": "B", "field": "last_name"},
+        {"title": "B-", "field": "last_name"},
+        {"title": "C+", "field": "last_name"},
+        {"title": "C", "field": "last_name"},
+        {"title": "C-", "field": "last_name"},
+        {"title": "D+", "field": "last_name"},
+        {"title": "D", "field": "last_name"},
+        {"title": "D-", "field": "last_name"},
+        {"title": "F", "field": "last_name"},
+        {"title": "W", "field": "last_name"}
+    ],
+    "InstructorTable":[
+        {"title": "id", "field": "id", "hidden": true},
+        {"title": "Instructor Name", "field": "last_name"},
+        {"title": "Rating", "field": "last_name"}
+    ]
+}
