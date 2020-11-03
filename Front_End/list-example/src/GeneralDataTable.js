@@ -21,7 +21,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Alert from '@material-ui/lab/Alert';
 import axios from 'axios';
-//import Axios from 'axios';
+import Axios from 'axios';
 
 // boilerplate code from the documentation
 // https://material-table.com/#/docs/get-started
@@ -55,36 +55,36 @@ const currUrl = "https://dbsampleserver.herokuapp.com";;
 
 export default function GeneralDataTable(props) {
 
-  // const [data, setData] = useState([]); //table data
-  const data = props.data
+  const [data, setData] = useState([]); //table data
+  //const data = props.data
 
   //for error handling
   const [iserror, setIserror] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
 
-  // useEffect(() => {
-  //   getUpdate()
-  // }, [])
+  useEffect(() => {
+    getUpdate()
+  }, [])
 
-  // const getUpdate = () => {
-  //   console.log("Updating")
-  //   let final_data = []
+  const getUpdate = () => {
+    console.log("Updating")
+    let final_data = []
 
-  //   //toying around with personal server data entry
-  //   Axios({
-  //     method: "GET", 
-  //     url: currUrl,
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     }
-  //   }).then(res => {
-  //     res.data.forEach(element => {
-  //       final_data.push(element)
-  //     })
-  //     console.log([...final_data])
-  //     setData([...final_data])
-  //   })
-  // }
+    //toying around with personal server data entry
+    Axios({
+      method: "GET", 
+      url: currUrl,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      res.data.forEach(element => {
+        final_data.push(element)
+      })
+      console.log([...final_data])
+      setData([...final_data])
+    })
+  }
 
   const handleRowUpdate = (newData, oldData, resolve) => {
     //validation
@@ -97,35 +97,17 @@ export default function GeneralDataTable(props) {
     }
 
     if(errorList.length < 1){
-      // api.patch("/users/"+newData.id, newData)
-      // .then(res => {
-      //   const dataUpdate = [...data];
-      //   const index = oldData.tableData.id;
-      //   dataUpdate[index] = newData;
-      //   setData([...dataUpdate]);
-      //   resolve()
-      //   setIserror(false)
-      //   setErrorMessages([])
-      // })
-      // .catch(error => {
-      //   setErrorMessages(["Update failed! Server error"])
-      //   setIserror(true)
-      //   resolve()
-
-      // })
       axios.post(currUrl + '/update', [newData, oldData])
         .then(res => {
           setErrorMessages([])
           setIserror(false)
-          props.getUpdate()
+          getUpdate()
         }).then(resolve())
     }else{
       setErrorMessages(errorList)
       setIserror(true)
       resolve()
-
     }
-    //getUpdate()
   }
 
   const handleRowAdd = (newData, resolve) => {
@@ -144,7 +126,7 @@ export default function GeneralDataTable(props) {
         .then(res => {
           setErrorMessages([])
           setIserror(false)
-          props.getUpdate()
+          getUpdate()
         }).catch(error => {
             setErrorMessages(["Cannot add data. Server error!"])
             setIserror(true)
@@ -162,7 +144,7 @@ export default function GeneralDataTable(props) {
       .then(res => {
         setErrorMessages([])
         setIserror(false)
-        props.getUpdate()
+        getUpdate()
       }).then(resolve())
   }
 
