@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import Admin from './AdminComponent/Admin';
 import GeneralDataTable from './GeneralDataTable';
@@ -6,6 +6,7 @@ import CourseDetail from './CourseDetail';
 import colJSON from './columns.json';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import Axios from 'axios'
 
 import {
   BrowserRouter as Router,
@@ -14,7 +15,32 @@ import {
   Link
 } from "react-router-dom";
 
+const currUrl = "http://localhost:4000";
+
 function Main() {
+  const [data, setData] = useState([]); //table data
+  const getUpdate = () => {
+    console.log("Updating")
+    let final_data = []
+
+    //toying around with personal server data entry
+    Axios({
+      method: "GET", 
+      url: currUrl,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      res.data.forEach(element => {
+        final_data.push(element)
+      })
+      console.log([...final_data])
+      setData([...final_data])
+    })
+  }
+  useEffect(() => {
+    getUpdate()
+  }, [])
 
   return (
     <Router>
@@ -35,10 +61,10 @@ function Main() {
 
       <Switch>
         <Route path="/viewer">
-          <GeneralDataTable title={"Course Viewer"} editable={false} selection={true} col={colJSON.CourseSectionTable}/>
+          <GeneralDataTable data={data} getUpdate={getUpdate} title={"Course Viewer"} editable={false} selection={true} col={colJSON.CourseSectionTable}/>
         </Route>
         <Route path="/admin">
-          <Admin editable={true} selection={false}/>
+          <Admin data={data} getUpdate={getUpdate} editable={true} selection={false}/>
         </Route>
         <Route path="/course_detail_test">
           <CourseDetail />

@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import React, {useEffect, useState} from 'react';
 import { forwardRef } from 'react';
 import Grid from '@material-ui/core/Grid'
@@ -20,6 +21,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Alert from '@material-ui/lab/Alert';
 import axios from 'axios';
+//import Axios from 'axios';
 
 // boilerplate code from the documentation
 // https://material-table.com/#/docs/get-started
@@ -45,41 +47,44 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const api = axios.create({
-  baseURL: `https://reqres.in/api`
-})
+//const api = axios.create({
+ // baseURL: `https://reqres.in/api`
+//})
+
+const currUrl = "http://localhost:4000";
 
 export default function GeneralDataTable(props) {
 
-  const [data, setData] = useState([]); //table data
+  // const [data, setData] = useState([]); //table data
+  const data = props.data
 
   //for error handling
   const [iserror, setIserror] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
 
-  useEffect(() => {
-    api.get("/users")
-        .then(res => {
-            let final_data = [...res.data.data];
+  // useEffect(() => {
+  //   getUpdate()
+  // }, [])
 
-            // for (let i = 1000; i < 1120; i += 1) {
-            //   final_data.push({
-            //     "id": i,
-            //     "email": "george.bluth@reqres.in",
-            //     "first_name": "George" + i.toString(),
-            //     "last_name": "Bluth" + i.toString(),
-            //     "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg"
-            //     }
-            //   );
-            // }
+  // const getUpdate = () => {
+  //   console.log("Updating")
+  //   let final_data = []
 
-            setData(final_data);
-            //setData(res.data.data)
-         })
-         .catch(error=>{
-             console.log("Error")
-         })
-  }, [])
+  //   //toying around with personal server data entry
+  //   Axios({
+  //     method: "GET", 
+  //     url: currUrl,
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     }
+  //   }).then(res => {
+  //     res.data.forEach(element => {
+  //       final_data.push(element)
+  //     })
+  //     console.log([...final_data])
+  //     setData([...final_data])
+  //   })
+  // }
 
   const handleRowUpdate = (newData, oldData, resolve) => {
     //validation
@@ -92,29 +97,35 @@ export default function GeneralDataTable(props) {
     }
 
     if(errorList.length < 1){
-      api.patch("/users/"+newData.id, newData)
-      .then(res => {
-        const dataUpdate = [...data];
-        const index = oldData.tableData.id;
-        dataUpdate[index] = newData;
-        setData([...dataUpdate]);
-        resolve()
-        setIserror(false)
-        setErrorMessages([])
-      })
-      .catch(error => {
-        setErrorMessages(["Update failed! Server error"])
-        setIserror(true)
-        resolve()
+      // api.patch("/users/"+newData.id, newData)
+      // .then(res => {
+      //   const dataUpdate = [...data];
+      //   const index = oldData.tableData.id;
+      //   dataUpdate[index] = newData;
+      //   setData([...dataUpdate]);
+      //   resolve()
+      //   setIserror(false)
+      //   setErrorMessages([])
+      // })
+      // .catch(error => {
+      //   setErrorMessages(["Update failed! Server error"])
+      //   setIserror(true)
+      //   resolve()
 
-      })
+      // })
+      axios.post(currUrl + '/update', [newData, oldData])
+        .then(res => {
+          setErrorMessages([])
+          setIserror(false)
+          props.getUpdate()
+        }).then(resolve())
     }else{
       setErrorMessages(errorList)
       setIserror(true)
       resolve()
 
     }
-
+    //getUpdate()
   }
 
   const handleRowAdd = (newData, resolve) => {
@@ -128,44 +139,31 @@ export default function GeneralDataTable(props) {
     }
 
     if(errorList.length < 1){ //no error
-      api.post("/users", newData)
-      .then(res => {
-        let dataToAdd = [...data];
-        dataToAdd.push(newData);
-        setData(dataToAdd);
-        resolve()
-        setErrorMessages([])
-        setIserror(false)
-      })
-      .catch(error => {
-        setErrorMessages(["Cannot add data. Server error!"])
-        setIserror(true)
-        resolve()
-      })
+      //toying around with local server fetching
+      axios.post(currUrl + "/post", newData)
+        .then(res => {
+          setErrorMessages([])
+          setIserror(false)
+          props.getUpdate()
+        }).catch(error => {
+            setErrorMessages(["Cannot add data. Server error!"])
+            setIserror(true)
+            resolve()
+          }).then(resolve())
     }else{
       setErrorMessages(errorList)
       setIserror(true)
       resolve()
     }
-
-
   }
 
   const handleRowDelete = (oldData, resolve) => {
-
-    api.delete("/users/"+oldData.id)
+    axios.post(currUrl + "/delete", oldData)
       .then(res => {
-        const dataDelete = [...data];
-        const index = oldData.tableData.id;
-        dataDelete.splice(index, 1);
-        setData([...dataDelete]);
-        resolve()
-      })
-      .catch(error => {
-        setErrorMessages(["Delete failed! Server error"])
-        setIserror(true)
-        resolve()
-      })
+        setErrorMessages([])
+        setIserror(false)
+        props.getUpdate()
+      }).then(resolve())
   }
 
   return (
