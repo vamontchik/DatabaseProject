@@ -22,6 +22,7 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import Alert from '@material-ui/lab/Alert';
 import axios from 'axios';
 import Axios from 'axios';
+import SearchView from './SearchView'
 
 // boilerplate code from the documentation
 // https://material-table.com/#/docs/get-started
@@ -62,31 +63,33 @@ export default function GeneralDataTable(props) {
   }, [])
 
   const getUpdate = () => {
-    let final_data = []
-    Axios({
-      method: "GET", 
-      url: currUrl,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => {
-      res.data.forEach(element => {
-        final_data.push(element)
+    if (props.isSearchable === false || props.isSearchable === undefined) {
+      let final_data = []
+      Axios({
+        method: "GET", 
+        url: currUrl,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => {
+        res.data.forEach(element => {
+          final_data.push(element)
+        })
+        console.log([...final_data])
+        setData([...final_data])
       })
-      console.log([...final_data])
-      setData([...final_data])
-    })
+    }
   }
 
   const handleRowUpdate = (newData, oldData, resolve) => {
     //validation
     let errorList = []
-    if(newData.first_name === ""){
-      errorList.push("Please enter first name")
-    }
-    if(newData.last_name === ""){
-      errorList.push("Please enter last name")
-    }
+    // if(newData.first_name === ""){
+    //   errorList.push("Please enter first name")
+    // }
+    // if(newData.last_name === ""){
+    //   errorList.push("Please enter last name")
+    // }
 
     if(errorList.length < 1){
       axios.post(currUrl + '/update', [newData, oldData])
@@ -105,12 +108,12 @@ export default function GeneralDataTable(props) {
   const handleRowAdd = (newData, resolve) => {
     //validation
     let errorList = []
-    if(newData.first_name === undefined){
-      errorList.push("Please enter first name")
-    }
-    if(newData.last_name === undefined){
-      errorList.push("Please enter last name")
-    }
+    // if(newData.first_name === undefined){
+    //   errorList.push("Please enter first name")
+    // }
+    // if(newData.last_name === undefined){
+    //   errorList.push("Please enter last name")
+    // }
 
     if(errorList.length < 1){ //no error
       //toying around with local server fetching
@@ -140,11 +143,32 @@ export default function GeneralDataTable(props) {
       }).then(resolve())
   }
 
+  const submit = (search1, search2) => {
+    // let final_data = []
+    //   Axios({
+    //     method: "GET", 
+    //     url: currUrl,
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }).then(res => {
+    //     res.data.forEach(element => {
+    //       final_data.push(element)
+    //     })
+    //     console.log([...final_data])
+    //     setData([...final_data])
+    //   })
+    console.log(search1)
+    setData([{"id":797979, "first_name":search1, "last_name":search2}])
+  }
+
   return (
     <div className="App" style={{marginTop: "2%"}}>
       <Grid container spacing={1}>
           <Grid item xs={1}></Grid>
           <Grid item xs={10}>
+          {props.isSearchable ? <SearchView submit={submit} /> : <></>
+          }
           <div>
             {iserror &&
               <Alert severity="error">
@@ -190,7 +214,9 @@ export default function GeneralDataTable(props) {
                 pageSizeOptions: [10, 15, 20, 25],
                 addRowPosition: "first",
                 grouping: true,
-                selection: props.selection
+                selection: props.selection,
+                search: !props.isSearchable,
+                filtering: true,
               }}
 
             />

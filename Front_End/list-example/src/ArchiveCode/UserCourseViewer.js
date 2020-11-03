@@ -335,6 +335,7 @@ export default function EnhancedTable() {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
+  
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 

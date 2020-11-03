@@ -1,0 +1,16 @@
+.row {
+    margin: 0;
+    padding: 0;
+}
+
+.col {
+    margin: 0;
+    padding: 0;
+}
+
+.Cont {
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    justify-content: left;
+}
