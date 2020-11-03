@@ -15,7 +15,7 @@ import {
   Link
 } from "react-router-dom";
 
-const currUrl = "http://dbsampleserver.herokuapp.com";
+const currUrl = "https://dbsampleserver.herokuapp.com";
 
 function Main() {
   const [data, setData] = useState([]); //table data
