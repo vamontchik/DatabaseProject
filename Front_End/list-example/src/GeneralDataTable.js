@@ -51,7 +51,7 @@ const tableIcons = {
  // baseURL: `https://reqres.in/api`
 //})
 
-const currUrl = "http://dbsampleserver.herokuapp.com";;
+const currUrl = "https://dbsampleserver.herokuapp.com";;
 
 export default function GeneralDataTable(props) {
 
