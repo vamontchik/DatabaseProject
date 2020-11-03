@@ -35,14 +35,14 @@ def fill_table(data, table_name):
 def main():
     #node: this opens and closes a connection each time we fill a table which is not smart
     #but oh wellllllllll
-    data = read_csv_data("csv_data/Course_Section.csv")
-    fill_table(data, "Course_Section")
+    data = read_csv_data("csv_data/CourseSection.csv")
+    fill_table(data, "CourseSection")
 
-    data = read_csv_data("csv_data/Grade_Distribution.csv")
-    fill_table(data, "Grade_Distribution")
+    data = read_csv_data("csv_data/GradeDistribution.csv")
+    fill_table(data, "GradeDistribution")
 
-    data = read_csv_data("csv_data/Gen_Ed.csv")
-    fill_table(data, "Gen_Ed")
+    data = read_csv_data("csv_data/GenEd.csv")
+    fill_table(data, "GenEd")
 
     data = read_csv_data("csv_data/Instructor.csv")
     fill_table(data, "Instructor")

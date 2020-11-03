@@ -5,55 +5,55 @@ CREATE DATABASE course_db;
 USE course_db;
 
 
-CREATE TABLE Gen_Ed (
-	`Subject` VARCHAR(20) NOT NULL,
-	`Number` INT(10) UNSIGNED NOT NULL,
+CREATE TABLE GenEd (
+	`subject` VARCHAR(20) NOT NULL,
+	`number` INT(10) UNSIGNED NOT NULL,
 	`ACP` VARCHAR(255),
 	`CS` VARCHAR(255),
 	`HUM` VARCHAR(255),
   `NAT` VARCHAR(255),
   `QR` VARCHAR(255),
 	`SBS` VARCHAR(255),
-	CONSTRAINT `pk_Gen_Ed` PRIMARY KEY(`Subject`, `Number`)
+	CONSTRAINT `pk_Gen_Ed` PRIMARY KEY(`subject`, `number`)
 );
 
 CREATE TABLE Instructor (
-	`Instructor_Name` VARCHAR(255) NOT NULL,
-  `Rating` FLOAT NOT NULL,
-	CONSTRAINT `pk_Instructor` PRIMARY KEY(`Instructor_Name`)
+	`instructorName` VARCHAR(255) NOT NULL,
+  `rating` FLOAT NOT NULL,
+	CONSTRAINT `pk_Instructor` PRIMARY KEY(`instructorName`)
 );
 
-CREATE TABLE Grade_Distribution (
-	`A_Plus` INT(10) UNSIGNED NOT NULL,
-	`A` INT(10) UNSIGNED NOT NULL,
-	`A_Minus` INT(10) UNSIGNED NOT NULL,
-	`B_Plus` INT(10) UNSIGNED NOT NULL,
-	`B` INT(10) UNSIGNED NOT NULL,
-	`B_Minus` INT(10) UNSIGNED NOT NULL,
-	`C_Plus` INT(10) UNSIGNED NOT NULL,
-	`C` INT(10) UNSIGNED NOT NULL,
-	`C_Minus` INT(10) UNSIGNED NOT NULL,
-	`D_Plus` INT(10) UNSIGNED NOT NULL,
-	`D` INT(10) UNSIGNED NOT NULL,
-	`D_Minus` INT(10) UNSIGNED NOT NULL,
-	`F` INT(10) UNSIGNED NOT NULL,
-	`W` INT(10) UNSIGNED NOT NULL,
-  `Instructor_Name` VARCHAR(255) NOT NULL,
-	`Subject` VARCHAR(20) NOT NULL,
-  `Number` INT(10) UNSIGNED NOT NULL,
-	CONSTRAINT `pk_Grade_Distribution` PRIMARY KEY(`Instructor_Name`, `Subject`, `Number`)
+CREATE TABLE GradeDistribution (
+	`aPlus` INT(10) UNSIGNED NOT NULL,
+	`a` INT(10) UNSIGNED NOT NULL,
+	`aMinus` INT(10) UNSIGNED NOT NULL,
+	`bPlus` INT(10) UNSIGNED NOT NULL,
+	`b` INT(10) UNSIGNED NOT NULL,
+	`bMinus` INT(10) UNSIGNED NOT NULL,
+	`cPlus` INT(10) UNSIGNED NOT NULL,
+	`c` INT(10) UNSIGNED NOT NULL,
+	`cMinus` INT(10) UNSIGNED NOT NULL,
+	`dPlus` INT(10) UNSIGNED NOT NULL,
+	`d` INT(10) UNSIGNED NOT NULL,
+	`dMinus` INT(10) UNSIGNED NOT NULL,
+	`f` INT(10) UNSIGNED NOT NULL,
+	`w` INT(10) UNSIGNED NOT NULL,
+  `instructorName` VARCHAR(255) NOT NULL,
+	`subject` VARCHAR(20) NOT NULL,
+  `number` INT(10) UNSIGNED NOT NULL,
+	CONSTRAINT `pk_Grade_Distribution` PRIMARY KEY(`instructorName`, `subject`, `number`)
 );
 
-CREATE TABLE Course_Section (
-	`Year` INT(10) UNSIGNED NOT NULL,
-	`Title` VARCHAR(255) NOT NULL,
-	`Term` VARCHAR(20) NOT NULL,
-	`Num_Students` INT(10) NOT NULL,
-	`Avg_GPA` FLOAT NOT NULL,
-	`Number` INT(10) UNSIGNED NOT NULL,
-	`Subject` VARCHAR(20) NOT NULL,
-  `Instructor_Name` VARCHAR(255) NOT NULL,
-	`Description` VARCHAR(2000) NOT NULL,
-	`Credit_Hours` VARCHAR(500) NOT NULL,
-	CONSTRAINT `pk_Course_Section` PRIMARY KEY(`Instructor_Name`, `Subject`, `Number`)
+CREATE TABLE CourseSection (
+	`year` INT(10) UNSIGNED NOT NULL,
+	`title` VARCHAR(255) NOT NULL,
+	`term` VARCHAR(20) NOT NULL,
+	`numStudents` INT(10) NOT NULL,
+	`avgGPA` FLOAT NOT NULL,
+	`number` INT(10) UNSIGNED NOT NULL,
+	`subject` VARCHAR(20) NOT NULL,
+  `instructorName` VARCHAR(255) NOT NULL,
+	`description` VARCHAR(2000) NOT NULL,
+	`creditHours` VARCHAR(500) NOT NULL,
+	CONSTRAINT `pk_Course_Section` PRIMARY KEY(`instructorName`, `subject`, `number`)
 );

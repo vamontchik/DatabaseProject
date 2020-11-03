@@ -32,12 +32,45 @@ def home():
 
 @app.route("/create", methods=["POST"])
 def get_all_rows():
-    pass # TODO: impl
-
+    pass
 
 @app.route("/read", methods=["GET"])
 def create_endpoint():
-    pass # TODO: impl
+    if request.is_json:
+        req = request.get_json()
+
+        table_name = req.get("entity")
+
+        #Notify client if their JSON does not have correct structure
+        if not table_name:
+            response_body = {
+                "message": "Bad request. No entity specified."
+            }
+            res = make_response(jsonify(response_body), 400)
+            return res
+
+        #Attempt to read the passed table from the DB
+        try:
+            cursor = cnx.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM {}".format(table_name))
+
+            rows = cursor.fetchall()
+            # TODO: parse req and do sql executions with connection to database
+            response_body = {
+                "entity": table_name,
+                "items" : rows
+            }
+            res = make_response(jsonify(response_body), 200)
+            return res
+
+        except mysql.connector.Error as err:
+            response_body = {
+                "message": "Entity does not exist."
+            }
+            res = make_response(jsonify(response_body), 404)
+            return res
+    else:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
 
 @app.route("/update", methods=["POST"])
@@ -52,7 +85,7 @@ def delete_endpoint():
 
 def connect_to_db():
     global cnx
-    cnx = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
+    cnx = mysql.connector.connect(user='root', password='example_pw', host='127.0.0.1', database='course_db')
 
 
 if __name__ == '__main__':
