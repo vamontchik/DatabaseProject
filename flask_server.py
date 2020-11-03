@@ -3,11 +3,6 @@ import mysql.connector
 
 app = Flask("flask_server")
 
-# /           --- []         home
-# /create     --- [POST]     add row(s) of data to a table
-# /read       --- [GET]      get row(s) of data from a table
-# /update     --- [POST]     update row(s) of data in a table
-# /delete     --- [DELETE]   delete row(s) of data in a table
 
 # generic format of each endpoint:
 # if request.is_json:
@@ -21,40 +16,185 @@ app = Flask("flask_server")
 # else:
 #     return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
-cnx = 0  # TODO: why does Python make it so you can't just declare global variables?
-         #       going to have to rely on Python's dynamic typing instead...
+@app.route('/test')
+def test():
+    # a = ('a', 123123, 123.4232)
+    b = [('a', 123123, 123.4232), ('b', 3333, -23.23)]
+
+    return make_response(jsonify(b), 200)
 
 
-@app.route("/")
-def home():
-    return "Hello, world!"
+@app.route('/create/Course_Section', methods=['POST'])  # create endpoint for demo
+def create_row_in_course_table():
+    if request.is_json:
+        req = request.get_json()
+
+        str_tuple_of_values = ','.join([
+            req['Year'], req['Title'], req['Term'], req['Num_Students'],
+            req['Avg_GPA'], req['Number'], req['Subject'], req['Instructor_Name'],
+            req['Credit_Hours'], req['Description']
+        ])
+
+        # INSERT INTO table_name
+        # VALUES (value1, value2, value3, ...);
+        sql_request = 'INSERT INTO Course_Section VALUES ({0});'.format(str_tuple_of_values)
+
+        # NOTE: no return data from INSERT sql statements
+
+        try:
+            connection = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
+            cursor = connection.cursor()
+            cursor.execute(sql_request)
+            # NOTE: no return data from INSERT sql statements
+        except mysql.connector.Error as e:
+            print("Error: {0}".format(e))
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+        # NOTE: no response body for INSERT sql statements
+
+        return make_response(jsonify({"message": "done"}), 200)
+    else:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
 
-@app.route("/create", methods=["POST"])
-def get_all_rows():
-    pass # TODO: impl
+@app.route('/read/Course_Section', methods=['GET'])  # read endpoint for demo
+def read_from_course_section():
+    if request.is_json:
+        req = request.get_json()
+
+        str_tuple_of_values = ','.join([
+            req['Year'], req['Title'], req['Term'], req['Num_Students'],
+            req['Avg_GPA'], req['Number'], req['Subject'], req['Instructor_Name'],
+            req['Credit_Hours'], req['Description']
+        ])
+
+        # SELECT *
+        # FROM table_name;
+        sql_request = 'SELECT * FROM Course_Section;'.format(str_tuple_of_values)
+
+        result_data = []
+
+        try:
+            connection = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
+            cursor = connection.cursor()
+            cursor.execute(sql_request)
+            result_data = cursor.fetchall()
+        except mysql.connector.Error as e:
+            print("Error: {0}".format(e))
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+        res = make_response(jsonify(result_data), 200)
+
+        return res
+    else:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
 
-@app.route("/read", methods=["GET"])
-def create_endpoint():
-    pass # TODO: impl
+@app.route("/update/Course_Section", methods=['POST'])  # update endpoint for demo
+def update_in_course_section():
+    if request.is_json:
+        req = request.get_json()
+
+        set_values_str = ''
+        column_names = \
+            ['Year', 'Title', 'Term', 'Num_Students', 'Avg_GPA', 'Number',
+             'Subject', 'Instructor_Name', 'Credit_Hours', 'Description']
+        for column_name in column_names:
+            set_values_str += column_name + '= ' + str(req[column_name])
+
+        number_value = req['Number']
+        subject = req['Subject']
+        instructor_name = req['Instructor_Name']
+        conditional_str = 'Number= {0}, Subject= {1}, Instructor_Name= {2}'.format(
+            number_value, subject, instructor_name
+        )
+
+        # UPDATE table_name
+        # SET column1 = value1, column2 = value2, ...
+        # WHERE condition;
+        sql_request = \
+            'UPDATE Course_Section SET {0} WHERE {1};'.format(set_values_str, conditional_str)
+
+        # NOTE: no result data returned from UPDATE sql statement
+
+        try:
+            connection = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
+            cursor = connection.cursor()
+            cursor.execute(sql_request)
+            # NOTE: no result data returned from UPDATE sql statement
+        except mysql.connector.Error as e:
+            print("Error: {0}".format(e))
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+        res = make_response(jsonify({"message": "done"}), 200)
+
+        return res
+    else:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
 
-@app.route("/update", methods=["POST"])
-def add_endpoint():
-    pass # TODO: impl
+@app.route("/delete/Course_Section", methods=['DELETE'])  # delete endpoint for demo
+def delete_in_course_section():
+    if request.is_json:
+        req = request.get_json()
+
+        number_value = req['Number']
+        subject = req['Subject']
+        instructor_name = req['Instructor_Name']
+        conditional_str = 'Number= {0}, Subject= {1}, Instructor_Name= {2}'.format(
+            number_value, subject, instructor_name
+        )
+
+        # DELETE FROM table_name
+        # WHERE condition;
+        sql_request = \
+            'DELETE FROM Course_Section WHERE {0};'.format(conditional_str)
+
+        # NOTE: no result data returned from UPDATE sql statement
+
+        try:
+            connection = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
+            cursor = connection.cursor()
+            cursor.execute(sql_request)
+            # NOTE: no result data returned from UPDATE sql statement
+        except mysql.connector.Error as e:
+            print("Error: {0}".format(e))
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+        res = make_response(jsonify({"message": "done"}), 200)
+
+        return res
+    else:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
 
-@app.route("/delete", methods=["DELETE"])
-def delete_endpoint():
-    pass # TODO: impl
+# @app.route("/")  # search endpoint for demo
 
+# ???
 
-def connect_to_db():
-    global cnx
-    cnx = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
+# @app.route("/")  # complex query one for demo
+
+# ???
+
+# @app.route("/")  # complex query two for demo
+# ???
+
+# def connect_to_db():
+#     global cnx
+#     cnx = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
 
 
 if __name__ == '__main__':
-    connect_to_db()
     app.run()
