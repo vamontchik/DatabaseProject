@@ -1,3 +1,17 @@
 body {
   background-color: lavender;
 }
+
+#header {
+  text-align: center;
+}
+
+.linker {
+  color: inherit;
+  text-decoration: none;
+}
+
+.linker:hover {
+  color: inherit;
+  text-decoration: none;
+}

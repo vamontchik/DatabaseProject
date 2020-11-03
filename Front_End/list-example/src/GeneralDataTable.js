@@ -47,16 +47,11 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-//const api = axios.create({
- // baseURL: `https://reqres.in/api`
-//})
-
 const currUrl = "https://dbsampleserver.herokuapp.com";;
 
 export default function GeneralDataTable(props) {
 
   const [data, setData] = useState([]); //table data
-  //const data = props.data
 
   //for error handling
   const [iserror, setIserror] = useState(false)
@@ -67,10 +62,7 @@ export default function GeneralDataTable(props) {
   }, [])
 
   const getUpdate = () => {
-    console.log("Updating")
     let final_data = []
-
-    //toying around with personal server data entry
     Axios({
       method: "GET", 
       url: currUrl,

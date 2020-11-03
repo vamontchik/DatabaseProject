@@ -6,6 +6,10 @@ import Admin from './AdminComponent/Admin';
 import GeneralDataTable from './GeneralDataTable';
 import CourseDetail from './CourseDetail';
 import colJSON from './columns.json';
+import {
+  //ListGroup, ListGroupItem, 
+  Nav, Navbar} from 'react-bootstrap'
+//import {Button} from '@material-ui/core'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 //import Axios from 'axios'
@@ -17,50 +21,17 @@ import {
   Link
 } from "react-router-dom";
 
-//const currUrl = "https://dbsampleserver.herokuapp.com";
-
 function Main() {
-  //const [data, setData] = useState([]); //table data
-  // const getUpdate = () => {
-  //   console.log("Updating")
-  //   let final_data = []
-
-  //   //toying around with personal server data entry
-  //   Axios({
-  //     method: "GET", 
-  //     url: currUrl,
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     }
-  //   }).then(res => {
-  //     res.data.forEach(element => {
-  //       final_data.push(element)
-  //     })
-  //     console.log([...final_data])
-  //     setData([...final_data])
-  //   })
-  // }
-  // useEffect(() => {
-  //   getUpdate()
-  // }, [])
-
   return (
     <Router>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/viewer">Course Viewer</Link>
-        </li>
-        <li>
-          <Link to="/admin">Admin</Link>
-        </li>
-        <li>
-          <Link to="/course_detail_test">Course Detail Test</Link>
-        </li>
-      </ul>
-
+      <Navbar bg="dark" variant="dark" expand="lg">
+        <Navbar.Brand>GenEd Generator</Navbar.Brand>
+        <Nav>
+          <Nav.Link><Link className="linker" to="/viewer">Course Viewer</Link></Nav.Link>
+          <Nav.Link><Link className="linker" to="/admin">Admin</Link></Nav.Link>
+          <Nav.Link><Link className="linker" to="/course_detail_test">Course Detail Example</Link></Nav.Link>
+        </Nav>
+      </Navbar>
       <Switch>
         <Route path="/viewer">
           <GeneralDataTable title={"Course Viewer"} editable={false} selection={true} col={colJSON.CourseSectionTable}/>
@@ -74,14 +45,13 @@ function Main() {
         <Route>
           <Home path="/"/>
         </Route>
-
       </Switch>
     </Router>
   )
 }
 
 function Home() {
-  return(<h1>Hello!</h1>)
+  return(<div></div>)
 }
 
 ReactDOM.render(<Main />,
