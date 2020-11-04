@@ -48,7 +48,7 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const currUrl = "https://dbsampleserver.herokuapp.com";;
+const baseURL = "localhost:5000";
 
 export default function GeneralDataTable(props) {
 
@@ -66,8 +66,8 @@ export default function GeneralDataTable(props) {
     if (props.isSearchable === false || props.isSearchable === undefined) {
       let final_data = []
       Axios({
-        method: "GET", 
-        url: currUrl,
+        method: "GET",
+        url: baseURL + props.readExtension,
         headers: {
           "Content-Type": "application/json"
         }
@@ -91,8 +91,22 @@ export default function GeneralDataTable(props) {
     //   errorList.push("Please enter last name")
     // }
 
+    /*
     if(errorList.length < 1){
-      axios.post(currUrl + '/update', [newData, oldData])
+      axios.post(baseURL + props.updateExtension, [newData, oldData])
+        .then(res => {
+          setErrorMessages([])
+          setIserror(false)
+          getUpdate()
+        }).then(resolve())
+    }else{
+      setErrorMessages(errorList)
+      setIserror(true)
+      resolve()
+    }
+    */
+    if(errorList.length < 1){
+      axios.post(baseURL + props.updateExtension, newData)
         .then(res => {
           setErrorMessages([])
           setIserror(false)
@@ -117,7 +131,7 @@ export default function GeneralDataTable(props) {
 
     if(errorList.length < 1){ //no error
       //toying around with local server fetching
-      axios.post(currUrl + "/post", newData)
+      axios.post(baseURL + props.createExtension, newData)
         .then(res => {
           setErrorMessages([])
           setIserror(false)
@@ -135,7 +149,7 @@ export default function GeneralDataTable(props) {
   }
 
   const handleRowDelete = (oldData, resolve) => {
-    axios.post(currUrl + "/delete", oldData)
+    axios.post(baseURL + props.deleteExtension, oldData)
       .then(res => {
         setErrorMessages([])
         setIserror(false)
@@ -146,7 +160,7 @@ export default function GeneralDataTable(props) {
   const submit = (search1, search2) => {
     // let final_data = []
     //   Axios({
-    //     method: "GET", 
+    //     method: "GET",
     //     url: currUrl,
     //     headers: {
     //       "Content-Type": "application/json"

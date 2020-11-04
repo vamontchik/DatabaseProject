@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {FormControl, Button, Row, Col, Container} from 'react-bootstrap'
-import GeneralDataTable from './GeneralDataTable'
 import './SearchView.css'
 
 

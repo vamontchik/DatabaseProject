@@ -1,16 +1,15 @@
 {
     "CourseSectionTable":[
-        {"title": "id", "field": "id", "hidden": true},
-        {"title": "Subject", "field": "Subject"},
-        {"title": "Number", "field": "Number"},
-        {"title": "Credit Hours", "field": "Credit_Hours"},
-        {"title": "Instructor Name", "field": "Instructor_Name"},
-        {"title": "Title", "field": "Title"},
-        {"title": "Term", "field": "Term"},
-        {"title": "Year", "field": "Year"},
-        {"title": "NumStudents", "field": "Num_Students"},
-        {"title": "AvgGpa", "field": "Avg_GPA", "editable": "never"},
-        {"title": "Description", "field": "Description"}
+        {"title": "Subject", "field": "subject", "editable": "onAdd"},
+        {"title": "Number", "field": "number", "editable": "onAdd"},
+        {"title": "Credit Hours", "field": "creditHours"},
+        {"title": "Instructor Name", "field": "instructorName", "editable": "onAdd"},
+        {"title": "Title", "field": "title"},
+        {"title": "Term", "field": "term"},
+        {"title": "Year", "field": "year"},
+        {"title": "NumStudents", "field": "numStudents"},
+        {"title": "AvgGpa", "field": "avgGPA", "editable": "onAdd"},
+        {"title": "Description", "field": "description"}
     ],
     "GenEdTable":[
         {"title": "id", "field": "id", "hidden": true},

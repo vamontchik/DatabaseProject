@@ -16,7 +16,7 @@ function Admin(props) {
     //   <InstructorTable />
     // </div>
     <div className="Admin" style={{margin: "2% 0 2% 0"}}>
-      <GeneralDataTable title={"Course Section"} headerBackgroundColor="#ADD8E6" editable={props.editable} col={colJSON.CourseSectionTable} />
+      <GeneralDataTable title={"Course Section"} headerBackgroundColor="#ADD8E6" editable={props.editable} col={colJSON.CourseSectionTable} createExtension={"/create/CourseSection"} readExtension={"/read/CourseSection"} updateExtension={"/update/CourseSection"} deleteExtension={"/delete/CourseSection"}/>
       <GeneralDataTable title={"Gen Ed"} headerBackgroundColor="#EFA5B0" editable={props.editable} col={colJSON.GenEdTable} />
       <GeneralDataTable title={"Grade Distribution"} headerBackgroundColor="#ADA8F6" editable={props.editable} col={colJSON.GradeDistributionTable} />
       <GeneralDataTable title={"Instructor"} headerBackgroundColor="#89ED96" editable={props.editable} col={colJSON.InstructorTable} />
