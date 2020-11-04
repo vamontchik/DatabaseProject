@@ -31,21 +31,14 @@ def fill_table(data, table_name):
     c.close()
     db.close()
 
+#function used for writing rows (in SQL insert format) to a file
+def append_sql_rows_util(file_name, table_name, data):
+    num_attributes = len(data[0])
 
-def main():
-    #node: this opens and closes a connection each time we fill a table which is not smart
-    #but oh wellllllllll
-    data = read_csv_data("csv_data/CourseSection.csv")
-    fill_table(data, "CourseSection")
+    with open(file_name, 'a') as f:
+        f.write("INSERT INTO {} VALUES \n".format(table_name))
+        for line in data:
+            joined_values = ", ".join(line)
+            f.write("({})\n".format(joined_values))
 
-    data = read_csv_data("csv_data/GradeDistribution.csv")
-    fill_table(data, "GradeDistribution")
-
-    data = read_csv_data("csv_data/GenEd.csv")
-    fill_table(data, "GenEd")
-
-    data = read_csv_data("csv_data/Instructor.csv")
-    fill_table(data, "Instructor")
-
-if __name__ == '__main__':
-    main()
+        f.write(";\n")

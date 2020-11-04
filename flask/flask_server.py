@@ -191,7 +191,7 @@ def delete_in_course_section():
 
 def connect_to_db():
     global cnx
-    cnx = mysql.connector.connect(user='root', password='example_pw', host='localhost', database='course_db')
+    cnx = mysql.connector.connect(user='root', password='example_pw', host='cs411project_mysql_1', database='course_db')
 
 # @app.route("/")  # search endpoint for demo
 
@@ -211,4 +211,4 @@ def connect_to_db():
 
 if __name__ == '__main__':
     connect_to_db()
-    app.run()
+    app.run(host='0.0.0.0')
