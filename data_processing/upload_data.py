@@ -42,3 +42,17 @@ def append_sql_rows_util(file_name, table_name, data):
             f.write("({})\n".format(joined_values))
 
         f.write(";\n")
+
+
+if __name__ == "__main__":
+    data = read_csv_data("csv_data/CourseSection.csv")
+    fill_table(data, "CourseSection")
+
+    data = read_csv_data("csv_data/GenEd.csv")
+    fill_table(data, "GenEd")
+
+    data = read_csv_data("csv_data/GradeDistribution.csv")
+    fill_table(data, "GradeDistribution")
+
+    data = read_csv_data("csv_data/Instructor.csv")
+    fill_table(data, "Instructor")

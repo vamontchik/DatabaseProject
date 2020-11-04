@@ -1,0 +1,50 @@
+{
+    "CourseSectionTable":[
+        {"title": "Subject", "field": "subject", "editable": "onAdd"},
+        {"title": "Number", "field": "number", "editable": "onAdd"},
+        {"title": "Credit Hours", "field": "creditHours"},
+        {"title": "Instructor Name", "field": "instructorName", "editable": "onAdd"},
+        {"title": "Title", "field": "title"},
+        {"title": "Term", "field": "term"},
+        {"title": "Year", "field": "year"},
+        {"title": "NumStudents", "field": "numStudents"},
+        {"title": "AvgGpa", "field": "avgGPA", "editable": "onAdd"},
+        {"title": "Description", "field": "description"}
+    ],
+    "GenEdTable":[
+        {"title": "id", "field": "id", "hidden": true},
+        {"title": "Subject", "field": "Subject"},
+        {"title": "Number", "field": "Number"},
+        {"title": "ACP", "field": "ACP"},
+        {"title": "NAT", "field": "NAT"},
+        {"title": "CS", "field": "CS"},
+        {"title": "QR", "field": "QR"},
+        {"title": "HUM", "field": "HUM"},
+        {"title": "SBS", "field": "SBS"}
+    ],
+    "GradeDistributionTable":[
+        {"title": "id", "field": "id", "hidden": true},
+        {"title": "Subject", "field": "Subject"},
+        {"title": "Number", "field": "Number"},
+        {"title": "Instructor Name", "field": "Instructor_Name"},
+        {"title": "A+", "field": "A_Plus"},
+        {"title": "A", "field": "A"},
+        {"title": "A-", "field": "A_Minus"},
+        {"title": "B+", "field": "B_Plus"},
+        {"title": "B", "field": "B"},
+        {"title": "B-", "field": "B_Minus"},
+        {"title": "C+", "field": "C_Plus"},
+        {"title": "C", "field": "C"},
+        {"title": "C-", "field": "C_Minus"},
+        {"title": "D+", "field": "D_Plus"},
+        {"title": "D", "field": "D"},
+        {"title": "D-", "field": "D_Minus"},
+        {"title": "F", "field": "F"},
+        {"title": "W", "field": "W"}
+    ],
+    "InstructorTable":[
+        {"title": "id", "field": "id", "hidden": true},
+        {"title": "Instructor Name", "field": "Instructor_Name"},
+        {"title": "Rating", "field": "Rating"}
+    ]
+}

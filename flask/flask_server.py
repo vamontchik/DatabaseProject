@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 import mysql.connector
 
 app = Flask("flask_server")
+CORS(app)
 
 
 # generic format of each endpoint:
