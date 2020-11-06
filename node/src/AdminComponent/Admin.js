@@ -17,6 +17,7 @@ function Admin(props) {
     // </div>
     <div className="Admin" style={{margin: "2% 0 2% 0"}}>
       <GeneralDataTable title={"Course Section"} headerBackgroundColor="#ADD8E6" editable={props.editable} col={colJSON.CourseSectionTable} createExtension={"/create/CourseSection"} readExtension={"/read/CourseSection"} updateExtension={"/update/CourseSection"} deleteExtension={"/delete/CourseSection"}/>
+      <GeneralDataTable title={"Search Table"} headerBackgroundColor="#ADD8E6" editable={false} isSearchable={true} col={colJSON.SearchTable} />
     </div>
   );
 }

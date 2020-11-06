@@ -148,7 +148,7 @@ export default function GeneralDataTable(props) {
   }
 
   const handleRowDelete = (oldData, resolve) => {
-    axios.post(baseURL + props.deleteExtension, oldData)
+    axios.delete(baseURL + props.deleteExtension, {data: oldData})
       .then(res => {
         setErrorMessages([])
         setIserror(false)
@@ -157,22 +157,15 @@ export default function GeneralDataTable(props) {
   }
 
   const submit = (search1, search2) => {
-    // let final_data = []
-    //   Axios({
-    //     method: "GET",
-    //     url: currUrl,
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }).then(res => {
-    //     res.data.forEach(element => {
-    //       final_data.push(element)
-    //     })
-    //     console.log([...final_data])
-    //     setData([...final_data])
-    //   })
-    console.log(search1)
-    setData([{"id":797979, "first_name":search1, "last_name":search2}])
+    axios.get(baseURL + "/search/CourseSection", { params: { subject: search1, number: search2 } }).then(
+      res => {
+        let final_data = [];
+        res.data.forEach(element => {
+              final_data.push(element);
+        })
+        setData([...final_data]);
+      }
+    );
   }
 
   return (

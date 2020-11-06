@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import mysql.connector
+import time
+import sys
 
 app = Flask("flask_server")
 CORS(app)
@@ -26,6 +28,9 @@ cnx = None
 def create_row_in_course_table():
     if request.is_json:
         req = request.get_json()
+        print(req, file=sys.stderr)
+
+        columns = ['year', 'title', 'term', 'numStudents', 'avgGPA', 'number', 'subject', 'instructorName', 'description', 'creditHours']
         string_fields = {'title', 'term', 'subject', 'instructorName', 'description', 'creditHours'}
 
         #right now the way I am wrapping strings in single quotes is bad
@@ -34,7 +39,7 @@ def create_row_in_course_table():
         str_tuple_of_values = ""
 
         #join values together with the appropriate formatting for string and non-string fields
-        for index, key in enumerate(req):
+        for index, key in enumerate(columns):
             if key in string_fields:
                 str_tuple_of_values += "'{}'".format(req[key])
             else:
@@ -58,6 +63,7 @@ def create_row_in_course_table():
             # NOTE: no return data from INSERT sql statements
         except mysql.connector.Error as e:
             #note: The finally clause will still run before this returns. (I think so at least)
+            print(e, file=sys.stderr)
             return make_response(jsonify({"message": "DB Error. Check the JSON fields you are suppyling."}), 400)
         finally:
             if cnx.is_connected():
@@ -67,6 +73,7 @@ def create_row_in_course_table():
 
         return make_response(jsonify({"message": "done"}), 200)
     else:
+        print("Did not send JSON", file=sys.stderr)
         return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
 
@@ -100,6 +107,7 @@ def read_from_course_section():
 def update_in_course_section():
     if request.is_json:
         req = request.get_json()
+        print(req, file=sys.stderr)
         string_fields = {'title', 'term', 'subject', 'instructorName', 'description', 'creditHours'}
 
         #build set value string
@@ -190,11 +198,52 @@ def delete_in_course_section():
     else:
         return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
+@app.route("/search/CourseSection", methods=['GET'])
+def search_course_section():
+    subject = request.args.get("subject")
+    number = request.args.get("number")
 
+    print(request.args, file=sys.stderr)
+
+    if not subject or not number:
+        return make_response(jsonify({"message": "Please specify both a subject and a number to search for a Course."}), 400)
+
+    subject = str(subject)
+    number = int(number)
+
+    print(subject, file=sys.stderr)
+    print(number, file=sys.stderr)
+
+    sql_request = \
+        "SELECT * FROM CourseSection WHERE subject='{0}' AND number={1};".format(subject, number)
+
+    try:
+        cursor = cnx.cursor(dictionary=True)
+        cursor.execute(sql_request)
+
+        rows = cursor.fetchall()
+
+        response_body = rows
+        res = make_response(jsonify(response_body), 200)
+        return res
+        # NOTE: no result data returned from UPDATE sql statement
+    except mysql.connector.Error as e:
+        return make_response(jsonify({"message": "DB error. Plese try again."}), 400)
+    finally:
+        if cnx.is_connected():
+            cursor.close()
+
+
+#TODO spruce this up
 def connect_to_db():
     global cnx
-    cnx = mysql.connector.connect(user='root', password='example_pw', host='cs411project_mysql_1', database='course_db')
 
+    while cnx == None:
+        try:
+            cnx = mysql.connector.connect(user='root', password='example_pw', host='cs411project_mysql_1', database='course_db')
+        except mysql.connector.errors.InterfaceError as e:
+            time.sleep(5)
+            print("Failed to connect, reattempting.")
 # @app.route("/")  # search endpoint for demo
 
 # ???
