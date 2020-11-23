@@ -6,6 +6,7 @@ services:
       - MYSQL_ROOT_PASSWORD=example_pw
     volumes:
         - ./schema_files/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+        - ./storage:/var/lib/mysql
     ports:
       - "3306:3306"
   flask:
