@@ -7,196 +7,317 @@ import sys
 app = Flask("flask_server")
 CORS(app)
 
-
-# generic format of each endpoint:
-# if request.is_json:
-#     req = request.get_json()
-#     # TODO: parse req and do sql executions with connection to database
-#     response_body = {
-#         # TODO: construct response body for react
-#     }
-#     res = make_response(jsonify(response_body), 200)
-#     return res
-# else:
-#     return make_response(jsonify({"message": "Request body must be JSON"}), 400)
-
-#persistent database connection
-#TODO Need to close this connection at some point when the app stops running
+# persistent database connection
+# TODO: Need to close this connection at some point when the app stops running
+#       vlad - not sure if we need this, tbh. we need the connection up the entire
+#              runtime of the application. shutting down the docker container
+#              seems to do this for us anyway.
 cnx = None
 
-@app.route('/create/CourseSection', methods=['POST'])  # create endpoint for demo
-def create_row_in_course_table():
-    if request.is_json:
-        req = request.get_json()
-        print(req, file=sys.stderr)
+###
+### utils
+###
 
-        columns = ['year', 'title', 'term', 'numStudents', 'avgGPA', 'number', 'subject', 'instructorName', 'description', 'creditHours']
-        string_fields = {'title', 'term', 'subject', 'instructorName', 'description', 'creditHours'}
-
-        #right now the way I am wrapping strings in single quotes is bad
-        #there's a better way to do it but I have to start doing CS 374
-        #do not stare too long at this disaster
-        str_tuple_of_values = ""
-
-        #join values together with the appropriate formatting for string and non-string fields
-        for index, key in enumerate(columns):
-            if key in string_fields:
-                str_tuple_of_values += "'{}'".format(req[key])
-            else:
-                str_tuple_of_values += str(req[key])
-
-            #always append a comma unless this is the last elem
-            if index != (len(req) - 1):
-                str_tuple_of_values += ', '
-
-
-        # INSERT INTO table_name
-        # VALUES (value1, value2, value3, ...);
-        sql_request = 'INSERT INTO CourseSection VALUES ({});'.format(str_tuple_of_values)
-
-        # NOTE: no return data from INSERT sql statements
-
-        try:
-            cursor = cnx.cursor()
-            cursor.execute(sql_request)
-            cnx.commit()
-            # NOTE: no return data from INSERT sql statements
-        except mysql.connector.Error as e:
-            #note: The finally clause will still run before this returns. (I think so at least)
-            print(e, file=sys.stderr)
-            return make_response(jsonify({"message": "DB Error. Check the JSON fields you are suppyling."}), 400)
-        finally:
-            if cnx.is_connected():
-                cursor.close()
-
-        # NOTE: no response body for INSERT sql statements
-
-        return make_response(jsonify({"message": "done"}), 200)
-    else:
-        print("Did not send JSON", file=sys.stderr)
-        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
-
-
-@app.route('/read/CourseSection', methods=['GET'])  # read endpoint for demo
-def read_from_course_section():
-    #Attempt to read all rows from CourseSection table
+def verify_json_format(format_list, input_json, db_name_str):
     try:
-        cursor = cnx.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM CourseSection;")
+        for key in format_list:
+            val = input_json[key]
+    except KeyError as e:
+        error_msg = "Did not specify correct fields to uniquely identify a {} row.".format(db_name_str)
+        return make_response(jsonify({"message": error_msg}), 400), False
+    
+    return None, True # success case
 
-        rows = cursor.fetchall()
 
-        # TODO: parse req and do sql executions with connection to database
-        response_body = rows
-        res = make_response(jsonify(response_body), 200)
-        return res
-    except mysql.connector.Error as err:
-        #This should never happend because the user never passes any input
-        #If this occurs, this means something on the server-side got messed up
-        response_body = {
-            "message": "DB error."
-        }
-        res = make_response(jsonify(response_body), 500)
-        return res
+def connect_to_db():
+    global cnx
+
+    while cnx == None:
+        try:
+            cnx = mysql.connector.connect(user='root', password='example_pw', host='cs411project_mysql_1', database='course_db')
+        except mysql.connector.errors.InterfaceError as e:
+            time.sleep(5)
+            print("Failed to connect, re-attempting...")
+
+
+###
+### /create endpoints
+###
+
+
+def execute_generic_insert_query(sql_query):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(sql_request)
+        cnx.commit()
+        return make_response(jsonify({"message": "done"}), 200)
+    except mysql.connector.Error as e:
+        # NOTE: The finally clause will still run before this returns. (I think so at least)
+        return make_response(jsonify({"message": "DB Error. Check the JSON fields you are suppyling."}), 400)
     finally:
         if cnx.is_connected():
             cursor.close()
 
 
-@app.route("/update/CourseSection", methods=['POST'])  # update endpoint for demo
+def generic_create_endpoint(columns, string_fields, db_name_str):
+    if not request.is_json:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+    
+    req = request.get_json()
+
+    err_msg, success = verify_json_format(columns, req, db_name_str)
+    if not success:
+        return err_msg
+
+    str_tuple_of_values = build_values_str_create(req, columns, string_fields)
+
+    # NOTE:
+    # INSERT INTO table_name
+    # VALUES (value1, value2, value3, ...);
+    sql_query = 'INSERT INTO {} VALUES ({});'.format(db_name_str, str_tuple_of_values)
+
+    # NOTE: no return data from INSERT sql statements
+    # NOTE: no response body for INSERT sql statements
+
+    return execute_generic_insert_query(sql_query)
+
+
+@app.route('/create/GradeDistribution', methods=['POST'])
+def create_row_in_grade_distribution():
+    columns = ['aPlus','a','aMinus','bPlus','b','bMinus','cPlus','c','cMinus','dPlus','d','dMinus','f','w','instructorName','subject','number']
+    string_fields = {'instructorName', 'subject'}
+    return generic_create_endpoint(columns, string_fields, 'GradeDistribution')
+
+
+@app.route('/create/GenEd', methods=['POST'])
+def create_row_in_gen_ed():
+    columns = ['subject','number','ACP','CS','HUM','NAT','QR','SBS']
+    string_fields = {'subject','number','ACP','CS','HUM','NAT','QR','SBS'}
+    return generic_create_endpoint(columns, string_fields, 'GenEd')
+
+
+@app.route('/create/Instructor', methods=['POST'])
+def create_row_in_instructor():
+    columns = ['instructorName', 'rating']
+    string_fields = {'instructorName'}
+    return generic_create_endpoint(columns, string_fields, 'Instructor')
+
+
+@app.route('/create/CourseSection', methods=['POST'])
+def create_row_in_course_section():
+    columns = ['year','title','term','numStudents','avgGPA','number','subject','instructorName','description','creditHours']
+    string_fields = {'title', 'term', 'subject', 'instructorName', 'description', 'creditHours'}
+    return generic_create_endpoint(columns, string_fields, 'CourseSection')
+
+###
+### /read endpoints
+###
+
+def execute_generic_read_query(sql_query):
+    try:
+        cursor = cnx.cursor(dictionary=True)
+        cursor.execute(sql_query)
+        rows = cursor.fetchall()
+        response_body = rows # TODO: necessary? helps clarify there's no need to construct
+                             #       the response_body, just pass up raw, but... still X)
+        return make_response(jsonify(response_body), 200)
+    except mysql.connector.Error as err:
+        # This should never happen because the user never passes any input.
+        # If this occurs, this means something on the server-side got messed up.
+        response_body = {"message": "DB error."}
+        return make_response(jsonify(response_body), 500)
+    finally:
+        if cnx.is_connected():
+            cursor.close()
+
+def generic_read_endpoint(db_name_str):
+    sql_query = "SELECT * FROM {};".format(db_name_str)
+    # NOTE : no json verify here becuase we don't need json input...
+    return execute_generic_read_query(sql_query)
+
+
+@app.route('/read/CourseSection', methods=['GET'])
+def read_from_course_section():
+    return generic_read_endpoint('CourseSection')
+
+
+@app.route('/read/Instructor', methods=['GET'])
+def read_from_instructor():
+    return generic_read_endpoint('Instructor')
+
+
+@app.route('/read/GenEd', methods=['GET'])
+def read_from_gened():
+    return generic_read_endpoint('GenEd')
+
+
+@app.route('/read/GradeDistribution', methods=['GET'])
+def read_from_grade_distribution():
+    return generic_read_endpoint('GradeDistribution')
+
+###
+### /update endpoints
+###
+
+def build_values_str_update(req, string_fields):
+    str_tuple_of_values = ''
+    for index, key in enumerate(req):
+        if key in string_fields:
+            str_tuple_of_values += key + "= " + "'{}'".format(req[key])
+        else:
+            str_tuple_of_values += key + "= " + str(req[key])
+
+        # always append a comma unless this is the last elem
+        if index != (len(req) - 1):
+            str_tuple_of_values += ', '
+    return str_tuple_of_values
+
+
+def build_conditional_str_update(req):
+    number_value = str(req['number'])
+    subject = "'{}'".format(req['subject'])
+    instructor_name = "'{}'".format(req['instructorName'])
+    return 'number= {0} AND subject= {1} AND instructorName= {2}'.format(number_value, subject, instructor_name)
+
+
+def execute_generic_update_query(sql_query):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(sql_query)
+        cnx.commit()
+        return make_response(jsonify({"message": "done"}), 200)
+    except mysql.connector.Error as e:
+        return make_response(jsonify({"message": "DB Error. Check the JSON fields you are suppyling."}), 400)
+    finally:
+        if cnx.is_connected():
+            cursor.close()
+
+
+def generic_update_endpoint(db_name_str, columns, string_fields):
+    if not request.is_json:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+    
+    req = request.get_json()
+
+    err_msg, success = verify_json_format(columns, req, db_name_str)
+    if not success:
+        return err_msg
+
+    str_tuple_of_values = build_values_str_update(req, string_fields)
+    conditional_str = build_conditional_str_update(req)
+
+    # NOTE:
+    # UPDATE table_name
+    # SET column1 = value1, column2 = value2, ...
+    # WHERE condition;
+    sql_query = 'UPDATE {0} SET {1} WHERE {2};'.format(db_name_str, str_tuple_of_values, conditional_str)
+
+    # NOTE: no result data returned from UPDATE sql statement
+
+    return execute_generic_update_query(sql_query)
+
+
+@app.route('/update/GradeDistribution', methods=['POST'])
+def update_in_grade_distribution():
+    columns = ['aPlus','a','aMinus','bPlus','b','bMinus','cPlus','c','cMinus','dPlus','d','dMinus','f','w','instructorName','subject','number']
+    string_fields = {'instructorName', 'subject'}
+    return generic_update_endpoint('GradeDistribution', columns, string_fields)
+
+
+@app.route('/update/GenEd', methods=['POST'])
+def update_in_gen_ed():
+    columns = ['subject','number','ACP','CS','HUM','NAT','QR','SBS']
+    string_fields = {'subject','number','ACP','CS','HUM','NAT','QR','SBS'}
+    return generic_update_endpoint('GenEd', columns, string_fields)
+
+
+@app.route('/update/Instructor', methods=['POST'])
+def update_in_instructor():
+    columns = ['instructorName', 'rating']
+    string_fields = {'instructorName'}
+    return generic_update_endpoint('Instructor', columns, string_fields)
+
+
+@app.route("/update/CourseSection", methods=['POST'])
 def update_in_course_section():
-    if request.is_json:
-        req = request.get_json()
-        print(req, file=sys.stderr)
-        string_fields = {'title', 'term', 'subject', 'instructorName', 'description', 'creditHours'}
+    columns = ['year','title','term','numStudents','avgGPA','number','subject','instructorName','description','creditHours']
+    string_fields = {'title', 'term', 'subject', 'instructorName', 'description', 'creditHours'}
+    return generic_update_endpoint('CourseSection', columns, string_fields)
 
-        #build set value string
-        str_tuple_of_values = ''
 
-        for index, key in enumerate(req):
-            if key in string_fields:
-                str_tuple_of_values += key + "= " + "'{}'".format(req[key])
-            else:
-                str_tuple_of_values += key + "= " + str(req[key])
+###
+### /delete endpoints
+###
 
-            #always append a comma unless this is the last elem
-            if index != (len(req) - 1):
-                str_tuple_of_values += ', '
+def build_conditional_str_delete(req):
+    number_value = str(req['number'])
+    subject = "'{}'".format(req['subject'])
+    instructor_name = "'{}'".format(req['instructorName'])
+    return 'number= {0} AND subject= {1} AND instructorName= {2}'.format(number_value, subject, instructor_name)
 
-        try:
-            number_value = str(req['number'])
-            subject = "'{}'".format(req['subject'])
-            instructor_name = "'{}'".format(req['instructorName'])
-        except KeyError as e:
-            return make_response(jsonify({"message": "Did not specify enough fields to uniquely identify a Course Section row."}), 400)
 
-        conditional_str = 'number= {0} AND subject= {1} AND instructorName= {2}'.format(
-            number_value, subject, instructor_name
-        )
+def execute_generic_delete_query(sql_query):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(sql_query)
+        cnx.commit()
+        return make_response(jsonify({"message": "done"}), 200)
+    except mysql.connector.Error as e:
+        return make_response(jsonify({"message": "DB Error. Check the JSON fields you are suppyling."}), 400)
+    finally:
+        if cnx.is_connected():
+            cursor.close()
 
-        # UPDATE table_name
-        # SET column1 = value1, column2 = value2, ...
-        # WHERE condition;
-        sql_request = \
-            'UPDATE CourseSection SET {0} WHERE {1};'.format(str_tuple_of_values, conditional_str)
 
-        # NOTE: no result data returned from UPDATE sql statement
-
-        try:
-            cursor = cnx.cursor()
-            cursor.execute(sql_request)
-            cnx.commit()
-            # NOTE: no result data returned from UPDATE sql statement
-        except mysql.connector.Error as e:
-            return make_response(jsonify({"message": "DB Error. Check the JSON fields you are suppyling."}), 400)
-        finally:
-            if cnx.is_connected():
-                cursor.close()
-
-        res = make_response(jsonify({"message": "done"}), 200)
-
-        return res
-    else:
+def generic_delete_endpoint(db_name_str, columns):
+    if not request.is_json:
         return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
+    req = request.get_json()
 
-@app.route("/delete/CourseSection", methods=['DELETE'])  # delete endpoint for demo
+    err_msg, success = verify_json_format(columns, req, db_name_str)
+    if not success:
+        return err_msg
+
+    conditional_str = build_conditional_str_delete(req)
+
+    # NOTE:
+    # DELETE FROM table_name
+    # WHERE condition;
+    sql_query = 'DELETE FROM CourseSection WHERE {};'.format(conditional_str)
+
+    # NOTE: no result data returned from UPDATE sql statement
+
+    return execute_generic_delete_query(sql_query)
+
+
+@app.route('/delete/CourseSection', methods=['DELETE'])
 def delete_in_course_section():
-    if request.is_json:
-        req = request.get_json()
+    columns = ['number','subject','instructorName']
+    return generic_delete_endpoint('CourseSection', columns)
 
-        try :
-            number_value = str(req['number'])
-            subject = "'{}'".format(req['subject'])
-            instructor_name = "'{}'".format(req['instructorName'])
-            conditional_str = 'number= {0} AND subject= {1} AND instructorName= {2}'.format(
-                number_value, subject, instructor_name
-            )
-        except KeyError as e:
-            return make_response(jsonify({"message": "Failed to specify enough fields for unique identification of Course Section item."}), 400)
 
-        # DELETE FROM table_name
-        # WHERE condition;
-        sql_request = \
-            'DELETE FROM CourseSection WHERE {};'.format(conditional_str)
+@app.route('/delete/Instructor', methods=['DELETE'])
+def delete_in_instructor():
+    columns = ['instructorName']
+    return generic_delete_endpoint('Instructor', columns)
 
-        # NOTE: no result data returned from UPDATE sql statement
 
-        try:
-            cursor = cnx.cursor()
-            cursor.execute(sql_request)
-            cnx.commit()
-            # NOTE: no result data returned from UPDATE sql statement
-        except mysql.connector.Error as e:
-            return make_response(jsonify({"message": "DB Error. Check the JSON fields you are suppyling."}), 400)
-        finally:
-            if cnx.is_connected():
-                cursor.close()
+@app.route('/delete/GenEd', methods=['DELETE'])
+def delete_in_gened():
+    columns = ['number','subject']
+    return generic_delete_endpoint('GenEd', columns)
 
-        res = make_response(jsonify({"message": "done"}), 200)
-        return res
-    else:
-        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+
+@app.route('/delete/GradeDistribution', methods=['DELETE'])
+def delete_in_grade_distribution():
+    columns = ['number','subject','instructorName']
+    return generic_delete_endpoint('GradeDistribution', columns)
+
+
+###
+### /search endpoint
+###
 
 @app.route("/search/CourseSection", methods=['GET'])
 def search_course_section():
@@ -232,32 +353,6 @@ def search_course_section():
     finally:
         if cnx.is_connected():
             cursor.close()
-
-
-#TODO spruce this up
-def connect_to_db():
-    global cnx
-
-    while cnx == None:
-        try:
-            cnx = mysql.connector.connect(user='root', password='example_pw', host='cs411project_mysql_1', database='course_db')
-        except mysql.connector.errors.InterfaceError as e:
-            time.sleep(5)
-            print("Failed to connect, reattempting.")
-# @app.route("/")  # search endpoint for demo
-
-# ???
-
-# @app.route("/")  # complex query one for demo
-
-# ???
-
-# @app.route("/")  # complex query two for demo
-# ???
-
-# def connect_to_db():
-#     global cnx
-#     cnx = mysql.connector.connect(user='', password='', host='127.0.0.1', database='')
 
 
 if __name__ == '__main__':
