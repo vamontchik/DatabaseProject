@@ -1,4 +1,4 @@
-env
-.idea
-storage
-mongo-volume
+env/
+.idea/
+storage/
+mongo-volume/

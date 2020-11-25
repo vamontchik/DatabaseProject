@@ -3,9 +3,13 @@ from flask_cors import CORS
 import mysql.connector
 import time
 import sys
+from pymongo import MongoClient
 
 app = Flask("flask_server")
 CORS(app)
+
+client = None
+db = None
 
 # persistent database connection
 # TODO: Need to close this connection at some point when the app stops running
@@ -13,6 +17,14 @@ CORS(app)
 #              runtime of the application. shutting down the docker container
 #              seems to do this for us anyway.
 cnx = None
+
+###
+### home route
+###
+
+@app.route('/', methods=['GET'])
+def home():
+    return make_response(jsonify({"message": "Welcome to the home page!"}), 400)
 
 ###
 ### utils
@@ -31,14 +43,38 @@ def verify_json_format(format_list, input_json, db_name_str):
 
 def connect_to_db():
     global cnx
+    global client
+    global db
 
     while cnx == None:
         try:
             cnx = mysql.connector.connect(user='root', password='example_pw', host='cs411project_mysql_1', database='course_db')
+            print("[mySQL] Succesfully connected!")
         except mysql.connector.errors.InterfaceError as e:
             time.sleep(5)
-            print("Failed to connect, re-attempting...")
+            print("[mySQL] Failed to connect, re-attempting...")
+    
+    while client == None:
+        try:
+            client = MongoClient('mongodb://flask:flask_pw@cs411project_mongodb_1:27017/mongodb_cs411project?authSource=admin')
+            db = client.mongodb_cs411project
+            print("[mongo] Succesfully connected!")
+        except Exception as e:
+            time.sleep(5)
+            print("[mongo] Failed to connect, re-attempting...")
 
+###
+### mongodb endpoints
+###
+
+@app.route('/read/mongodb', methods=['GET'])
+def read_from_mongodb():
+    # we need to wrap it in a list() call because
+    # pymongo returns a cursor, so wrapping it
+    # in a list forces pymongo to go through the cursor
+    # and plop all the data into the list!
+    res = list(db.keys.find({}))
+    return make_response(jsonify(res), 400)
 
 ###
 ### /create endpoints

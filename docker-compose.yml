@@ -12,25 +12,27 @@ services:
   flask:
     build: ./flask
     depends_on:
-      - "mysql"
+      - mongodb
+      - mysql
     ports:
       - "5000:5000"
   node:
     stdin_open: true
     build: ./node
     depends_on:
-      - "flask"
+      - flask
     ports:
       - "3000:3000"
   mongodb:
     image: mongo
     restart: always
     environment:
-      - MONGO_INITDB_DATABASE=cs411project_mongodb
       - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=example
+      - MONGO_INITDB_ROOT_PASSWORD=root_pw
+      - MONGO_INITDB_DATABASE=mongodb_cs411project
     volumes:
       - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./mongo-volume:/data/db
     ports:
-      - "27017-27019:27017-27019"
+      # - "27017-27019:27017-27019"
+      - '27017:27017'
