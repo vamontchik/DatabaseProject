@@ -5,8 +5,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=example_pw
     volumes:
-        - ./schema_files/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-        - ./storage:/var/lib/mysql
+      - ./schema_files/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./storage:/var/lib/mysql
     ports:
       - "3306:3306"
   flask:
@@ -22,3 +22,15 @@ services:
       - "flask"
     ports:
       - "3000:3000"
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=cs411project_mongodb
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    volumes:
+      - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volume:/data/db
+    ports:
+      - "27017-27019:27017-27019"
