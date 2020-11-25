@@ -4,7 +4,6 @@ from 'react';
 import ReactDOM from 'react-dom';
 import Admin from './AdminComponent/Admin';
 import GeneralDataTable from './GeneralDataTable';
-import CourseDetail from './CourseDetail';
 import colJSON from './columns.json';
 import {
   //ListGroup, ListGroupItem, 
@@ -29,18 +28,14 @@ function Main() {
         <Nav>
           <Nav.Link><Link className="linker" to="/viewer">Course Viewer</Link></Nav.Link>
           <Nav.Link><Link className="linker" to="/admin">Admin</Link></Nav.Link>
-          <Nav.Link><Link className="linker" to="/course_detail_test">Course Detail Example</Link></Nav.Link>
         </Nav>
       </Navbar>
       <Switch>
         <Route path="/viewer">
-          <GeneralDataTable title={"Course Viewer"} editable={false} selection={true} col={colJSON.CourseSectionTable}/>
+          <GeneralDataTable title={"Course Viewer"} editable={false} selection={true} col={colJSON.SmallCourseSectionTable} extension={'/CourseSection'}/>
         </Route>
         <Route path="/admin">
           <Admin editable={true} selection={false}/>
-        </Route>
-        <Route path="/course_detail_test">
-          <CourseDetail />
         </Route>
         <Route>
           <Home path="/"/>

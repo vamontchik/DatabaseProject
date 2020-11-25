@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import CanvasJSReact from './canvasjs.react';
@@ -12,11 +12,19 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 // Bar chart boilerplate: https://canvasjs.com/react-charts/bar-chart/
 
 function CourseDetail(props) {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
+  var data = props.data
+  if (props.data === undefined) {
+    data = {
+      title: "PS",
+      creditHours: "999",
+      instructorName: "Reed, Jason",
+      term: "Fall",
+      year: "2020",
+      numStudents: "400",
+      avgGPA: "4.0",
+      description: "The best class"
+    }
+  }
   const options = {
       animationEnabled: true,
       theme: "light2",
@@ -57,37 +65,29 @@ function CourseDetail(props) {
 
     return (
       <>
-        <Button variant="primary" onClick={handleShow}>
-          See course detail example
-        </Button>
-
-        <Modal size="lg" show={show} onHide={handleClose}>
+        <Modal size="lg" show={props.setShow} onHide={props.close}>
 
           <Modal.Header closeButton>
-            <Modal.Title>Course Detail: </Modal.Title>
+          <Modal.Title>{data.title}</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
-            <p>Title: </p>
-            <p>Credit Hours: </p>
-            <p>Instructor Name: </p>
-            <p>Instructor Rating: </p>
-            <p>Term: </p>
-            <p>Year: </p>
-            <p>Number of Students: </p>
-            <p>Average GPA: </p>
-            <p>Description: </p>
-            <p>Gen Ed Fulfillments: </p>
+            <p>{"Credit Hours: " + data.creditHours}</p>
+            <p>{"Instructor Name: " + data.instructorName}</p>
+            <p>{"Instructor Rating: " + "10"}</p>
+            <p>{"Term: " + data.term}</p>
+            <p>{"Year: " + data.year} </p>
+            <p>{"Number of Students: " + data.numStudents }</p>
+            <p>{"Average GPA: " + data.avgGPA} </p>
+            <p>{"Description: " + data.description} </p>
+            <p>{"Gen Ed Fulfillments: "} </p>
             <div>
-            <CanvasJSChart options = {options}
-              /* onRef = {ref => this.chart = ref} */
-              />
+            <CanvasJSChart options = {options} />
             </div>
-
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={props.close}>
               Close
             </Button>
           </Modal.Footer>
