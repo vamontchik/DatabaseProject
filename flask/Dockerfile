@@ -8,4 +8,5 @@ WORKDIR /app
 #install all packages in requirements.txt
 RUN pip3 install -r requirements.txt
 
-CMD [ "python3", "flask_server.py" ]
+# unbuffered output so we see all stdouts !
+CMD [ "python3", "-u", "flask_server.py" ]

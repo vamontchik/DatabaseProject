@@ -3,7 +3,9 @@ from flask_cors import CORS
 import mysql.connector
 import time
 import sys
+
 from pymongo import MongoClient
+from bson.json_util import loads, dumps
 
 app = Flask("flask_server")
 CORS(app)
@@ -24,7 +26,7 @@ cnx = None
 
 @app.route('/', methods=['GET'])
 def home():
-    return make_response(jsonify({"message": "Welcome to the home page!"}), 400)
+    return make_response(jsonify({"message": "Welcome to the home page!"}), 200)
 
 ###
 ### utils
@@ -69,12 +71,20 @@ def connect_to_db():
 
 @app.route('/read/mongodb', methods=['GET'])
 def read_from_mongodb():
-    # we need to wrap it in a list() call because
-    # pymongo returns a cursor, so wrapping it
-    # in a list forces pymongo to go through the cursor
-    # and plop all the data into the list!
-    res = list(db.keys.find({}))
-    return make_response(jsonify(res), 400)
+    res = list(db.keys.find())
+    
+    return make_response(dumps(res), 200)
+
+@app.route('/create/mongodb', methods=['POST'])
+def create_document_in_mongodb():
+    if not request.is_json:
+        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+
+    # TODO: verify json info for mongodb? do we even need to...?
+
+    req = request.get_json()
+
+    return make_response(dumps(req), 200)
 
 ###
 ### /create endpoints
