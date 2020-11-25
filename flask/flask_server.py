@@ -71,6 +71,10 @@ def connect_to_db():
 
 @app.route('/read/mongodb', methods=['GET'])
 def read_from_mongodb():
+    # we need to wrap it in a list() call because
+    # pymongo returns a cursor, so wrapping it
+    # in a list forces pymongo to go through the cursor
+    # and plop all the data into the list!
     res = list(db.keys.find())
     
     return make_response(dumps(res), 200)
