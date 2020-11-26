@@ -28,7 +28,7 @@ function Generator() {
   const [ SBS_SS, setSBS_SS ] = useState(0);
   const [ SBS_BSC, setSBS_BSC ] = useState(0);
 
-  const available_priorities = ["Maximize GPA", "Maximize Credit Hours", "Minimize Credit Hours"];
+  const available_priorities = ["Maximize GPA", "Maximize Unique Courses", "Minimize Unique Courses"];
   const [ priority, setPriority ] = useState(available_priorities[0]);
 
   const handleChange = (event) => {
@@ -105,8 +105,8 @@ function Generator() {
               }}
               >
               <option value={available_priorities[0]}>Maximize GPA</option>
-              <option value={available_priorities[1]}>Minimize Credit Hours</option>
-              <option value={available_priorities[2]}>Maximize Credit Hours</option>
+              <option value={available_priorities[1]}>Maximize Unique Courses</option>
+              <option value={available_priorities[2]}>Minimize Unique Courses</option>
               </Select>
             </FormControl>
         </Col>
