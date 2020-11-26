@@ -10,7 +10,7 @@ function InputSlider(props) {
       </Col>
 
       <Col xs={6}>
-        <Slider
+        <Slider style={{top: "6px"}}
           value={props.value}
           min={props.min}
           step={props.step}

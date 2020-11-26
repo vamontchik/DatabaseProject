@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './Generator.css';
 import {Form, Button, Row, Col, Container, Badge, Tooltip, OverlayTrigger} from 'react-bootstrap'
 import InputSlider from './InputSlider'
-
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+
 function Generator() {
 
   const [ minAvgGpa, setMinAvgGpa ] = useState(0);
@@ -34,7 +34,6 @@ function Generator() {
   const handleChange = (event) => {
     setPriority(event.target.value)
   };
-
 
   const generateSchedule = () => {
       let scheduleJSON = {
@@ -93,7 +92,7 @@ function Generator() {
       <InputSlider title="Social & Behavioral Sciences - SS" value={SBS_SS} setValue={setSBS_SS} min={0} max={3} step={1}/>
       <InputSlider title="Social & Behavioral Sciences - SBS" value={SBS_BSC} setValue={setSBS_BSC} min={0} max={3} step={1}/>
 
-      <Row className="generatorViewButton">
+      <Row className="generatorViewBottom">
         <Col xs={6} className="text-center">
           <FormControl style={{width: "100%", height: "100%"}}>
               <Select fullWidth block size="sm"
