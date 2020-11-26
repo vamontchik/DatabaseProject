@@ -1,0 +1,11 @@
+.schedule-item {
+  margin-top: 3vh;
+  margin-bottom: 3vh;
+}
+
+.schedule-item-header {
+  background: darkblue;
+  color: white;
+  border-radius: 5%;
+  font-size: 20px;
+}
