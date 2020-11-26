@@ -9,7 +9,7 @@ function ScheduleViewer() {
   let { scheduleId } = useParams();
 
   return (
-    <ScheduleItem>
+    <ScheduleItem id={scheduleId}>
     </ScheduleItem>
   );
 }

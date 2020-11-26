@@ -11,7 +11,7 @@ function ScheduleItem(props) {
             Click me!
           </Accordion.Toggle>
           <Accordion.Collapse eventKey="0">
-            <Card.Body>Hello! I'm the body</Card.Body>
+            <Card.Body>{"Hello! This is " + props.id}</Card.Body>
           </Accordion.Collapse>
         </Card>
       </Accordion>
