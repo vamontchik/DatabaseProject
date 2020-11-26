@@ -5,7 +5,7 @@ import time
 import sys
 
 from pymongo import MongoClient
-# from bson.json_util import loads, dumps
+from bson.json_util import loads, dumps
 from bson.objectid import ObjectId
 
 app = Flask("flask_server")
@@ -89,33 +89,73 @@ def read_from_mongodb():
     
     return make_response(jsonify(ret_schedules), 200)
 
-# TODO: impl this as necessary?
-# @app.route('/search/mongodb', methods=['POST'])
-# def search_from_mongodb():
-#     if not request.is_json:
-#         return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+# TODO: impl route for schedule generation?
+# @app.route('/schedule/mongodb', methods=['POST'])
+# incoming data: see msg in discord about incoming json format...
+# for maximizing class count in schedule: we accumulate classes from 0 -> max, and return whatever we get.
+# for minimizing class count in schedule: ???
+
+@app.route('/search/mongodb', methods=['POST'])
+def search_from_mongodb():
+    if not request.is_json:
+        return make_response(jsonify({'message': 'Request body must be JSON'}), 400)
     
-#     req = request.get_json()
+    oid_request = request.get_json()
 
-#     format_list = ['oid']
-#     err_msg, success = verify_json_format(format_list, req, 'mongodb')
-#     if not success:
-#         return err_msg
+    format_list = ['oid']
+    err_msg, success = verify_json_format(format_list, oid_request, 'mongodb')
+    if not success:
+        return err_msg
+
+    oid_str = oid_request['oid']
+
+    # obtain primary keys from mongodb
+    try:
+        oid_obj = ObjectId(oid_str)
+    except Exception as e: # Note: specific bson error can't be used b/c of package name clash???
+        return make_response(jsonify({'message':'invalid oid passed in'}), 400)
     
-#     print(req['oid'])
+    result_obj = db.keys.find_one({'_id': oid_obj})
+    if result_obj is None:
+        err_msg = 'no document found with oid={}'.format(oid_str)
+        return make_response(jsonify({'message': err_msg}), 400)
 
-#     result_obj = db.keys.find_one({'_id': ObjectId(req['oid'])})
+    if 'classes' not in result_obj:
+        err_msg = 'malformed document in mongodb with oid={}'.format(oid_str)
+        return make_response(jsonify({'message': err_msg}), 400)
 
-#     converted = dumps(result_obj)
+    # obtain record from mySQL db
+    all_records = []
+    for class_obj in result_obj['classes']:
+        format_list_inner = ['instructorName', 'subject', 'number']
+        err_msg, success = verify_json_format(format_list_inner, class_obj, 'CourseSection')
+        if not success:
+            return err_msg
+        
+        conditional_str = build_conditional_str_update(class_obj) # NOTE: the delete one works here, oops
+        sql_query = 'SELECT * FROM CourseSection WHERE {}'.format(conditional_str)
 
-#     # TODO: query sql DB for relevant row?
+        # print('sql_query: {}'.format(sql_query))
 
-#     return make_response(converted, 200)
+        try:
+            cursor = cnx.cursor()
+            cursor.execute(sql_query)
+            fetched_records = cursor.fetchall()
+            if len(fetched_records) != 1:
+                return make_response(jsonify({'message':'something terrible has occured...'}), 400)
+            all_records.append(fetched_records[0])
+        except mysql.connector.Error as e:
+            return make_response(jsonify({'message':'an error occured while accesing mySQL DB'}), 400)
+        finally:
+            if cnx.is_connected():
+                cursor.close()
+
+    return make_response(jsonify(all_records), 200)
 
 @app.route('/create/mongodb', methods=['POST'])
 def create_document_in_mongodb():
     if not request.is_json:
-        return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+        return make_response(jsonify({'message': 'Request body must be JSON'}), 400)
 
     schedule = request.get_json()
 
@@ -123,7 +163,7 @@ def create_document_in_mongodb():
     # which are later checked to be valid classes 
     # (ie. have primary keys of record in CourseSection)
     if not isinstance(schedule, list):
-        return make_response(jsonify({"message": "Must pass an array type!"}), 400)
+        return make_response(jsonify({'message': 'Must pass an array type!'}), 400)
 
     format_list_inner = ['instructorName', 'subject', 'number']
     list_of_constructed = []
@@ -149,7 +189,7 @@ def create_document_in_mongodb():
 
     # print('obj_id: {}'.format(obj_id))
 
-    response_body = {"oid": str(obj_id.inserted_id)}
+    response_body = {'oid': str(obj_id.inserted_id)}
 
     # print('response_body: {}'.format(response_body))
 
