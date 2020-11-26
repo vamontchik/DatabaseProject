@@ -1,8 +1,8 @@
 // bogus authentication zzz
 
-db.auth('root','root_pw')
-
 db = db.getSiblingDB('admin')
+
+db.auth('root','root_pw')
 
 db.createUser({
     user: 'flask',

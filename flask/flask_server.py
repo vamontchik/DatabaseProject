@@ -5,7 +5,8 @@ import time
 import sys
 
 from pymongo import MongoClient
-from bson.json_util import loads, dumps
+# from bson.json_util import loads, dumps
+from bson.objectid import ObjectId
 
 app = Flask("flask_server")
 CORS(app)
@@ -36,7 +37,7 @@ def verify_json_format(format_list, input_json, db_name_str):
     try:
         for key in format_list:
             val = input_json[key]
-    except KeyError as e:
+    except Exception as e:
         error_msg = "Did not specify correct fields to uniquely identify a {} row.".format(db_name_str)
         return make_response(jsonify({"message": error_msg}), 400), False
     
@@ -75,20 +76,84 @@ def read_from_mongodb():
     # pymongo returns a cursor, so wrapping it
     # in a list forces pymongo to go through the cursor
     # and plop all the data into the list!
-    res = list(db.keys.find())
+    all_schedules = list(db.keys.find())
+
+    # convert inner ObjectId json objects to strings
+    ret_schedules = list()
+    for schedule in all_schedules:
+        ret_obj = {
+            '_id': str(schedule['_id']), # converts to string here
+            'classes': schedule['classes']
+        }
+        ret_schedules.append(ret_obj)
     
-    return make_response(dumps(res), 200)
+    return make_response(jsonify(ret_schedules), 200)
+
+# TODO: impl this as necessary?
+# @app.route('/search/mongodb', methods=['POST'])
+# def search_from_mongodb():
+#     if not request.is_json:
+#         return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+    
+#     req = request.get_json()
+
+#     format_list = ['oid']
+#     err_msg, success = verify_json_format(format_list, req, 'mongodb')
+#     if not success:
+#         return err_msg
+    
+#     print(req['oid'])
+
+#     result_obj = db.keys.find_one({'_id': ObjectId(req['oid'])})
+
+#     converted = dumps(result_obj)
+
+#     # TODO: query sql DB for relevant row?
+
+#     return make_response(converted, 200)
 
 @app.route('/create/mongodb', methods=['POST'])
 def create_document_in_mongodb():
     if not request.is_json:
         return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
-    # TODO: verify json info for mongodb? do we even need to...?
+    schedule = request.get_json()
 
-    req = request.get_json()
+    # check to see if we got an array of json objs, 
+    # which are later checked to be valid classes 
+    # (ie. have primary keys of record in CourseSection)
+    if not isinstance(schedule, list):
+        return make_response(jsonify({"message": "Must pass an array type!"}), 400)
 
-    return make_response(dumps(req), 200)
+    format_list_inner = ['instructorName', 'subject', 'number']
+    list_of_constructed = []
+    for class_json_obj in schedule:
+        err_msg, success = verify_json_format(format_list_inner, class_json_obj, 'mongodb')
+        if not success:
+            return err_msg
+    
+        # construct json object to contain ONLY primary keys
+        constructed = {}
+        for item in format_list_inner:
+            constructed[item] = class_json_obj[item]
+
+        list_of_constructed.append(constructed)
+
+    # print('list_of_constructed: {}'.format(list_of_constructed))
+
+    final_constructed = {'classes': list_of_constructed}
+
+    # print('final_constructed: {}'.format(final_constructed))
+
+    obj_id = db.keys.insert_one(final_constructed)
+
+    # print('obj_id: {}'.format(obj_id))
+
+    response_body = {"oid": str(obj_id.inserted_id)}
+
+    # print('response_body: {}'.format(response_body))
+
+    return make_response(response_body, 200)
 
 ###
 ### /create endpoints
