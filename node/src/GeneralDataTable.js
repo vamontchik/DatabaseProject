@@ -161,6 +161,24 @@ export default function GeneralDataTable(props) {
     setShowConfirmModal(true)
   }
 
+  const fixedColumns = props.col.map((c) => {
+    if (c.field === 'subject') {
+      return ({
+        ...c,
+        tableData: undefined,
+        customFilterAndSearch: (term, rowData) => term.toUpperCase() === rowData.subject
+      })
+    } else if (c.field === 'avgGPA') {
+      return({
+        ...c,
+        tableData: undefined,
+        customFilterAndSearch: (term, rowData) => rowData.avgGPA > term
+      })
+    } else {
+      return ({...c, tableData: undefined})
+    }
+  })
+
   return (
     <>
     <CourseDetail setShow={showCourseModal} close={closeScheduleModal} data={courseModalData}/>
@@ -182,7 +200,7 @@ export default function GeneralDataTable(props) {
           </div>
             <MaterialTable style={{ border: "2px solid black" }}
               title= {props.title}
-              columns={props.col.map((c) => ({...c, tableData: undefined}))}
+              columns={fixedColumns}
               data={data}
               icons={tableIcons}
               localization={{
