@@ -6,12 +6,14 @@ import Admin from './AdminComponent/Admin';
 import GeneralDataTable from './GeneralDataTable';
 import colJSON from './columns.json';
 import {
-  //ListGroup, ListGroupItem, 
+  //ListGroup, ListGroupItem,
   Nav, Navbar} from 'react-bootstrap'
 //import {Button} from '@material-ui/core'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Generator from './Generator';
+import ScheduleEntry from './ScheduleEntry';
+
 //import Axios from 'axios'
 
 import {
@@ -30,6 +32,7 @@ function Main() {
           <Nav.Link><Link className="linker" to="/viewer">Course Viewer</Link></Nav.Link>
           <Nav.Link><Link className="linker" to="/admin">Admin</Link></Nav.Link>
           <Nav.Link><Link className="linker" to="/generator">Generator</Link></Nav.Link>
+          <Nav.Link><Link className="linker" to="/schedule">Schedule</Link></Nav.Link>
         </Nav>
       </Navbar>
       <Switch>
@@ -41,6 +44,9 @@ function Main() {
         </Route>
         <Route path="/generator">
           <Generator/>
+        </Route>
+        <Route path="/schedule">
+          <ScheduleEntry/>
         </Route>
         <Route>
           <Home path="/"/>

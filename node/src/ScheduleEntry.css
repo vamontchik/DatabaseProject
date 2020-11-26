@@ -1,0 +1,15 @@
+.schedule-entry-view {
+  padding: 20vh 10vw;
+  background: lightpink;
+  margin-top: 10vh;
+  margin-bottom: 10vh;
+  border-radius: 2%;
+}
+
+.id-input {
+  font-size: 50px;
+}
+
+.id-submit {
+  font-size: 50px;
+}
