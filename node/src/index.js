@@ -1,5 +1,5 @@
-import React 
-//,{useState, useEffect} 
+import React
+//,{useState, useEffect}
 from 'react';
 import ReactDOM from 'react-dom';
 import Admin from './AdminComponent/Admin';
@@ -11,6 +11,7 @@ import {
 //import {Button} from '@material-ui/core'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import Generator from './Generator';
 //import Axios from 'axios'
 
 import {
@@ -28,6 +29,7 @@ function Main() {
         <Nav>
           <Nav.Link><Link className="linker" to="/viewer">Course Viewer</Link></Nav.Link>
           <Nav.Link><Link className="linker" to="/admin">Admin</Link></Nav.Link>
+          <Nav.Link><Link className="linker" to="/generator">Generator</Link></Nav.Link>
         </Nav>
       </Navbar>
       <Switch>
@@ -36,6 +38,9 @@ function Main() {
         </Route>
         <Route path="/admin">
           <Admin editable={true} selection={false}/>
+        </Route>
+        <Route path="/generator">
+          <Generator/>
         </Route>
         <Route>
           <Home path="/"/>
