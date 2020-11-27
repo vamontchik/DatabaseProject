@@ -41,7 +41,7 @@ function ScheduleEntry() {
               </Row>
               <Row>
                 <Col>
-                  <Button className="id-submit" block onClick={redirect}>Navigate</Button>
+                  <Button className="id-submit" block onClick={redirect}>View</Button>
                 </Col>
               </Row>
           </Container>

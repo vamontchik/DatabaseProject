@@ -9,3 +9,10 @@
   border-radius: 5%;
   font-size: 20px;
 }
+
+.like-button {
+  background-color: inherit;
+  color: inherit;
+  border-radius: white;
+  border: 2px solid;
+}

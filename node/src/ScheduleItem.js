@@ -1,46 +1,37 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './ScheduleItem.css';
-import {Accordion, Card, Container} from 'react-bootstrap'
+import {Accordion, Card, Container, Button, Row, Col} from 'react-bootstrap'
+import CourseDetailInnerView from './CourseDetailInnerView';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import axios from 'axios'
 
 function ScheduleItem(props) {
 
     let data = props.data;
 
-    if (data == undefined) {
-      data = {
-        subject: "CS",
-        number: 225,
-        instructorName: "Smith, Bob",
-        rating: 5,
-        creditHours: "3 hours.",
-        title: "Abc",
-        term: "Fall",
-        year: "2019",
-        numStudents: 150,
-        description: "dsfhskjrddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        ACP: "ACP",
-        NAT: "",
-        CS: "WCC",
-        QR: "QR1",
-        HUM: "",
-        SBS: "",
-        avgGPA: 3.42222,
-        aPlus: 31,
-        a: 12,
-        aMinus: 14,
-        bPlus: 12,
-        b: 6,
-        bMinus: 3,
-        cPlus: 9,
-        c: 2,
-        cMinus: 8,
-        dPlus: 2,
-        d: 1,
-        dMinus: 0,
-        f: 0,
-        w: 1
-      };
-    }
+    const [liked, setLiked] = useState(data.liked);
+
+    // TODO: change api base url
+    const api = axios.create({
+      baseURL: `https://reqres.in/api`
+    })
+
+
+    const handleLike = () => {
+      // api call
+      setLiked(!liked);
+      // TODO: use API call to update the 'liked' field of a course in a schedule
+      /*
+        axios.post(baseURL + extension, scheduleJSON)
+          .then(res => {
+              // redirect to schedule URL
+          }).catch(error=>{
+              console.log("Error");
+          });
+      */
+
+    };
 
     return (
       <Container>
@@ -48,12 +39,28 @@ function ScheduleItem(props) {
         <Accordion defaultActiveKey="0">
           <Card className="schedule-item">
 
-            <Accordion.Toggle className="schedule-item-header" as={Card.Header} eventKey="1">
-              {data.subject + " " + String(data.number) + " (" + data.instructorName + ")"}
-            </Accordion.Toggle>
+            <Card.Header className="schedule-item-header" >
+              <Row className="align-items-center">
+                <Col xs={10}>
+                  <Accordion.Toggle as={Button} block variant="primary" style={{backgroundColor: "darkblue", borderColor: "darkblue"}} eventKey="1">
+                    <h3>{data.subject + " " + String(data.number) + " (" + data.instructorName + ")"}</h3>
+                  </Accordion.Toggle>
+                </Col>
+
+                <Col xs={2}>
+                  <Button active variant="outline-primary" className="like-button text-center" style={{ backgroundColor:"darkblue"}} block onClick={handleLike}>
+                    <Favorite color={liked == 1 ? "secondary" : ""}></Favorite>
+                  </Button>
+                </Col>
+              </Row>
+
+
+            </Card.Header>
 
             <Accordion.Collapse eventKey="1">
-              <Card.Body>{data.description}</Card.Body>
+              <Card.Body>
+                <CourseDetailInnerView data={data}></CourseDetailInnerView>
+              </Card.Body>
             </Accordion.Collapse>
 
           </Card>

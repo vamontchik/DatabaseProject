@@ -5,6 +5,7 @@ import InputSlider from './InputSlider'
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import axios from 'axios';
 
 function Generator() {
 
@@ -35,6 +36,11 @@ function Generator() {
     setPriority(event.target.value)
   };
 
+  // TODO: change API base url
+  const api = axios.create({
+    baseURL: `https://reqres.in/api`
+  });
+
   const generateSchedule = () => {
       let scheduleJSON = {
         	minAvgGpa: minAvgGpa,
@@ -55,6 +61,15 @@ function Generator() {
 
       // TODO : API function to create a schedule
       // and then route to the new page
+
+      /*
+        axios.post(baseURL + extension, scheduleJSON)
+          .then(res => {
+              // redirect to schedule URL
+          }).catch(error=>{
+              console.log("Error");
+          });
+      */
       console.log(scheduleJSON);
   };
 
