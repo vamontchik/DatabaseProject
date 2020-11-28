@@ -36,7 +36,7 @@ function Main() {
         </Nav>
       </Navbar>
       <Switch>
-        <Route path="/viewer">
+        <Route path={["/","/viewer"]}>
           <GeneralDataTable title={"Course Viewer"} editable={false} selection={true} col={colJSON.SmallCourseSectionTable} extension={'/CourseSection'}/>
         </Route>
         <Route path="/admin">
@@ -47,9 +47,6 @@ function Main() {
         </Route>
         <Route path="/schedule">
           <ScheduleEntry/>
-        </Route>
-        <Route>
-          <Home path="/"/>
         </Route>
       </Switch>
     </Router>
