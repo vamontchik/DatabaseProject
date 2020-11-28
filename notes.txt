@@ -1,0 +1,2 @@
+NOTE : root folder needs to be named 'cs411project' for docker bridge names !
+can potentially be changed in the future.
