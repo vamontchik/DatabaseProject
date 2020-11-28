@@ -2,6 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import CanvasJSReact from './canvasjs.react';
+import CourseDetailInner from './CourseDetailInnerView'
 
 //var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -68,22 +69,11 @@ function CourseDetail(props) {
         <Modal size="lg" show={props.setShow} onHide={props.close}>
 
           <Modal.Header closeButton>
-          <Modal.Title>{data.title}</Modal.Title>
+          <Modal.Title>{"Course Details"}</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
-            <p>{"Credit Hours: " + data.creditHours}</p>
-            <p>{"Instructor Name: " + data.instructorName}</p>
-            <p>{"Instructor Rating: " + "10"}</p>
-            <p>{"Term: " + data.term}</p>
-            <p>{"Year: " + data.year} </p>
-            <p>{"Number of Students: " + data.numStudents }</p>
-            <p>{"Average GPA: " + data.avgGPA} </p>
-            <p>{"Description: " + data.description} </p>
-            <p>{"Gen Ed Fulfillments: "} </p>
-            <div>
-            <CanvasJSChart options = {options} />
-            </div>
+            <CourseDetailInner data={data} />
           </Modal.Body>
 
           <Modal.Footer>
