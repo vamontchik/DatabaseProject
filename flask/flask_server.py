@@ -3,7 +3,7 @@ from flask_cors import CORS
 import mysql.connector
 import time
 import sys
-
+from enum import Enum
 from pymongo import MongoClient
 from bson.json_util import loads, dumps
 from bson.objectid import ObjectId
@@ -70,6 +70,89 @@ def connect_to_db():
 ### mongodb endpoints
 ###
 
+# strategy: accumulate as many classes as possible, to limit specified
+def maxCredHrsGen(criteria_json):
+    # set up counting dictionary
+    counting_dict = {}
+    for item in format_list:
+        counting_dict[item] = criteria[item]
+
+    # query sql db for all records joined on primary key values
+    # TODO: is this correct?
+    sql_query = '''
+        SELECT *
+        FROM CourseSection c 
+        JOIN GradeDistribution g ON c.instructorName = g.instructorName AND c.subject = g.subject AND c.number = g.number
+        JOIN Instructor i ON c.instructorName = i.instructorName
+        JOIN GenEd ge ON c.subject = ge.subject AND c.number = ge.number;
+    '''
+
+    # TODO: impl from here...
+
+    # iterate through db records, linearly, 
+    # and accumulate classes that match what we need
+
+    return make_response({'message':'unimplemented'}, 400)
+
+# strategy: ?
+def minCredHrsGen(criteria_json):
+    # TODO: impl this
+    return make_response({'message':'unimplemented'}, 400)
+
+# strategy: ?
+def maxGPA(criteria_json):
+    # TODO: impl this
+    return make_response({'message':'unimplemented'}, 400)
+
+class PriorityType(Enum):
+    MaxCredHrs = 1,
+    MinCredHrs = 2,
+    MaxGPA = 3,
+    Unknown = 4
+
+def parseGen(parse_str):
+    if parse_str == 'Maximize GPA':
+        return PriorityType.MaxGPA
+    if parse_str == 'Maximize Credit Hours':
+        return PriorityType.MaxCredHrs:
+    if parse_str == 'Minimize Credit Hours':
+        return PriorityType.MinCredHrs
+
+    return PriorityType.Unknown
+
+@app.route('/schedule/mongodb', methods=['POST'])
+def schedule_gen():
+    if not request.is_json:
+        return make_response(jsonify({'message': 'Request body must be JSON'}), 400)
+    
+    criteria = request.get_json()
+
+    format_list = [
+        'ACP_ACP',
+        'CS_NW','CS_US','CS_WCC',
+        'HUM_LP','HUM_LA',
+        'NAT_LS','NAT_PS',
+        'QR_QR1','QR_QR2',
+        'SBS_BSC','SBS_SS',
+        'minAvgGPA',
+        'priority'
+    ]
+    err_msg, success = verify_json_format(format_list, criteria, 'schedule gen')
+    if not success:
+        return err_msg
+    
+    typeOfGen = parseGen(format_list['priority'])
+    if typeOfGen == PriorityType.MaxCredHrs:
+        return maxCredHrsGen(criteria)
+    if typeOfGen == PriorityType.MinCredHrs:
+        return minCredHrsGen(criteria)
+    if typeOfGen == PriorityType.MaxGPA:
+        return maxGPA(criteria)
+    if typeOfGen == PriorityType.Unknown:
+        err_msg = 'unknown priority'
+        err_json = jsonify({'message':err_msg})
+        return make_response(err_json, 400)
+
 @app.route('/read/mongodb', methods=['GET'])
 def read_from_mongodb():
     # we need to wrap it in a list() call because
@@ -88,12 +171,6 @@ def read_from_mongodb():
         ret_schedules.append(ret_obj)
     
     return make_response(jsonify(ret_schedules), 200)
-
-# TODO: impl route for schedule generation?
-# @app.route('/schedule/mongodb', methods=['POST'])
-# incoming data: see msg in discord about incoming json format...
-# for maximizing class count in schedule: we accumulate classes from 0 -> max, and return whatever we get.
-# for minimizing class count in schedule: ???
 
 @app.route('/search/mongodb', methods=['POST'])
 def search_from_mongodb():
@@ -132,7 +209,7 @@ def search_from_mongodb():
         if not success:
             return err_msg
         
-        conditional_str = build_conditional_str_update(class_obj) # NOTE: the delete one works here, oops
+        conditional_str = build_conditional_str_update(class_obj) # NOTE: the delete one could work here too, oops
         sql_query = 'SELECT * FROM CourseSection WHERE {}'.format(conditional_str)
 
         # print('sql_query: {}'.format(sql_query))
