@@ -11,6 +11,17 @@
         {"title": "AvgGpa", "field": "avgGPA", "editable": "onAdd", "type": "numeric"},
         {"title": "Description", "field": "description"}
     ],
+    "SmallCourseSectionTable":[
+        {"title": "Subject", "field": "subject", "editable": "onAdd"},
+        {"title": "Number", "field": "number", "editable": "onAdd", "type": "numeric"},
+        {"title": "Credit Hours", "field": "creditHours"},
+        {"title": "Instructor Name", "field": "instructorName", "editable": "onAdd"},
+        {"title": "Title", "field": "title"},
+        {"title": "Term", "field": "term"},
+        {"title": "Year", "field": "year", "type": "numeric"},
+        {"title": "NumStudents", "field": "numStudents", "type": "numeric"},
+        {"title": "AvgGpa", "field": "avgGPA", "editable": "onAdd", "type": "numeric"}
+    ],
     "GenEdTable":[
         {"title": "Subject", "field": "subject", "editable": "onAdd"},
         {"title": "Number", "field": "number", "editable": "onAdd", "type": "numeric"},

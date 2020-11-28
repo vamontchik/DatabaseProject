@@ -1,0 +1,16 @@
+.generatorView {
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  padding-top: 5vh;
+  padding-bottom: 5vh;
+  background: white;
+  border-radius: 2%;
+}
+
+.generatorViewTitle {
+  margin-bottom: 2vh;
+}
+
+.generatorViewBottom {
+    margin-top: 3vh;
+}

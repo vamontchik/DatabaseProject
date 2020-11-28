@@ -23,6 +23,8 @@ import Alert from '@material-ui/lab/Alert';
 import axios from 'axios';
 import Axios from 'axios';
 import SearchView from './SearchView'
+import CourseDetail from './CourseDetail'
+import ScheduleConfirm from './ScheduleConfirmation'
 
 // boilerplate code from the documentation
 // https://material-table.com/#/docs/get-started
@@ -52,6 +54,14 @@ const baseURL = "http://localhost:5000";
 
 export default function GeneralDataTable(props) {
   const [data, setData] = useState([]); //table data
+  const [showCourseModal, setShowCourseModal] = useState(false)
+  const [courseModalData, setCourseModalData] = useState(undefined)
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [confirmModalData, setConfirmModalData] = useState([])
+
+  const closeScheduleModal = () => setShowCourseModal(false)
+  const closeConfirmModal = () => setShowConfirmModal(false)
 
   //for error handling
   const [iserror, setIserror] = useState(false)
@@ -66,7 +76,7 @@ export default function GeneralDataTable(props) {
       let final_data = []
       Axios({
         method: "GET",
-        url: baseURL + props.readExtension,
+        url: baseURL + '/read' + props.extension,
         headers: {
           "Content-Type": "application/json"
         }
@@ -83,29 +93,8 @@ export default function GeneralDataTable(props) {
   const handleRowUpdate = (newData, oldData, resolve) => {
     //validation
     let errorList = []
-    // if(newData.first_name === ""){
-    //   errorList.push("Please enter first name")
-    // }
-    // if(newData.last_name === ""){
-    //   errorList.push("Please enter last name")
-    // }
-
-    /*
     if(errorList.length < 1){
-      axios.post(baseURL + props.updateExtension, [newData, oldData])
-        .then(res => {
-          setErrorMessages([])
-          setIserror(false)
-          getUpdate()
-        }).then(resolve())
-    }else{
-      setErrorMessages(errorList)
-      setIserror(true)
-      resolve()
-    }
-    */
-    if(errorList.length < 1){
-      axios.post(baseURL + props.updateExtension, newData)
+      axios.post(baseURL + '/update' + props.extension, newData)
         .then(res => {
           setErrorMessages([])
           setIserror(false)
@@ -121,16 +110,10 @@ export default function GeneralDataTable(props) {
   const handleRowAdd = (newData, resolve) => {
     //validation
     let errorList = []
-    // if(newData.first_name === undefined){
-    //   errorList.push("Please enter first name")
-    // }
-    // if(newData.last_name === undefined){
-    //   errorList.push("Please enter last name")
-    // }
 
     if(errorList.length < 1){ //no error
       //toying around with local server fetching
-      axios.post(baseURL + props.createExtension, newData)
+      axios.post(baseURL + '/create' + props.extension, newData)
         .then(res => {
           setErrorMessages([])
           setIserror(false)
@@ -148,7 +131,7 @@ export default function GeneralDataTable(props) {
   }
 
   const handleRowDelete = (oldData, resolve) => {
-    axios.delete(baseURL + props.deleteExtension, {data: oldData})
+    axios.delete(baseURL + '/delete' + props.extension, {data: oldData})
       .then(res => {
         setErrorMessages([])
         setIserror(false)
@@ -157,7 +140,7 @@ export default function GeneralDataTable(props) {
   }
 
   const submit = (search1, search2) => {
-    axios.get(baseURL + "/search/CourseSection", { params: { subject: search1, number: search2 } }).then(
+    axios.get(baseURL + '/search' + props.extension, { params: { subject: search1, number: search2 } }).then(
       res => {
         let final_data = [];
         res.data.forEach(element => {
@@ -168,7 +151,38 @@ export default function GeneralDataTable(props) {
     );
   }
 
+  const showCourseModalWrap = (rowData) => {
+    setCourseModalData(rowData)
+    setShowCourseModal(true)
+  }
+
+  const showConfirmationModal = (e, rowData) => {
+    setConfirmModalData(rowData)
+    setShowConfirmModal(true)
+  }
+
+  const fixedColumns = props.col.map((c) => {
+    if (c.field === 'subject') {
+      return ({
+        ...c,
+        tableData: undefined,
+        customFilterAndSearch: (term, rowData) => term.toUpperCase() === rowData.subject
+      })
+    } else if (c.field === 'avgGPA') {
+      return({
+        ...c,
+        tableData: undefined,
+        customFilterAndSearch: (term, rowData) => rowData.avgGPA > term
+      })
+    } else {
+      return ({...c, tableData: undefined})
+    }
+  })
+
   return (
+    <>
+    <CourseDetail setShow={showCourseModal} close={closeScheduleModal} data={courseModalData}/>
+    <ScheduleConfirm setShow={showConfirmModal} close={closeConfirmModal} data={confirmModalData}/>
     <div className="App" style={{marginTop: "2%"}}>
       <Grid container spacing={1}>
           <Grid item xs={1}></Grid>
@@ -186,7 +200,7 @@ export default function GeneralDataTable(props) {
           </div>
             <MaterialTable style={{ border: "2px solid black" }}
               title= {props.title}
-              columns={props.col.map((c) => ({...c, tableData: undefined}))}
+              columns={fixedColumns}
               data={data}
               icons={tableIcons}
               localization={{
@@ -194,6 +208,13 @@ export default function GeneralDataTable(props) {
                     emptyDataSourceMessage: ''
                 }
               }}
+              actions={props.selection ? [{
+                icon: AddBox,
+                tooltip: 'Create Schedule',
+                isFreeAction: false,
+                onClick:showConfirmationModal
+              }] : []}
+              onRowClick={(event, rowData, togglePanel) => showCourseModalWrap(rowData)}
               editable={props.editable ? {
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve) => {
@@ -230,5 +251,6 @@ export default function GeneralDataTable(props) {
           <Grid item xs={1}></Grid>
         </Grid>
     </div>
+    </>
   );
 }
