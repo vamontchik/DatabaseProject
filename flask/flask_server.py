@@ -114,7 +114,7 @@ def parseGen(parse_str):
     if parse_str == 'Maximize GPA':
         return PriorityType.MaxGPA
     if parse_str == 'Maximize Credit Hours':
-        return PriorityType.MaxCredHrs:
+        return PriorityType.MaxCredHrs
     if parse_str == 'Minimize Credit Hours':
         return PriorityType.MinCredHrs
 
@@ -344,6 +344,18 @@ def create_row_in_course_section():
 ###
 ### /read endpoints
 ###
+
+@app.route('/read/allsql', methods=['GET'])
+def read_all_sql():
+    read_all_data_query = '''
+        SELECT *
+        FROM CourseSection c
+        JOIN GradeDistribution g ON c.instructorName = g.instructorName AND c.subject = g.subject AND c.number = g.number
+        JOIN Instructor i ON c.instructorName = i.instructorName
+        JOIN GenEd ge ON c.subject = ge.subject AND c.number = ge.number;
+    '''
+
+    return execute_generic_read_query(read_all_data_query)
 
 def execute_generic_read_query(sql_query):
     try:
