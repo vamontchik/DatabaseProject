@@ -6,8 +6,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 function Generator() {
+  const history = useHistory();
 
   const [ minAvgGpa, setMinAvgGpa ] = useState(0);
 
@@ -29,7 +31,7 @@ function Generator() {
   const [ SBS_SS, setSBS_SS ] = useState(0);
   const [ SBS_BSC, setSBS_BSC ] = useState(0);
 
-  const available_priorities = ["Maximize GPA", "Maximize Unique Courses", "Minimize Unique Courses"];
+  const available_priorities = ["Maximize GPA", "Maximize Unique Courses", "Minimize Unique Courses", "Maximize Favorability"];
   const [ priority, setPriority ] = useState(available_priorities[0]);
 
   const handleChange = (event) => {
@@ -38,8 +40,10 @@ function Generator() {
 
   // TODO: change API base url
   const api = axios.create({
-    baseURL: `https://reqres.in/api`
+    baseURL: "http://localhost:5000"
   });
+
+// TODO REDIRECT AFTER SUBMITTING SCHEDULE SOMEHOW
 
   const generateSchedule = () => {
       let scheduleJSON = {
@@ -62,14 +66,12 @@ function Generator() {
       // TODO : API function to create a schedule
       // and then route to the new page
 
-      /*
-        axios.post(baseURL + extension, scheduleJSON)
-          .then(res => {
-              // redirect to schedule URL
-          }).catch(error=>{
-              console.log("Error");
-          });
-      */
+    api.post("/schedule/mongodb", scheduleJSON)
+      .then(res => {
+          console.log(res)
+      }).catch(error=>{
+          console.log("Error");
+      });
       console.log(scheduleJSON);
   };
 
@@ -122,6 +124,7 @@ function Generator() {
               <option value={available_priorities[0]}>Maximize GPA</option>
               <option value={available_priorities[1]}>Maximize Unique Courses</option>
               <option value={available_priorities[2]}>Minimize Unique Courses</option>
+              <option value={available_priorities[3]}>Maximize Favorability</option>
               </Select>
             </FormControl>
         </Col>

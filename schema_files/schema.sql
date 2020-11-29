@@ -55,5 +55,6 @@ CREATE TABLE CourseSection (
   `instructorName` VARCHAR(255) NOT NULL,
 	`description` VARCHAR(2000) NOT NULL,
 	`creditHours` VARCHAR(500) NOT NULL,
+	`likes` INT(10) UNSIGNED NOT NULL,
 	CONSTRAINT `pk_Course_Section` PRIMARY KEY(`instructorName`, `subject`, `number`)
 );
