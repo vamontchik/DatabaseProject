@@ -17,7 +17,7 @@ function ScheduleItem(props) {
       baseURL: `https://reqres.in/api`
     })
 
-
+    // TODO: implement and link like backend call
     const handleLike = () => {
       // api call
       setLiked(!liked);

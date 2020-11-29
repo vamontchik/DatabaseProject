@@ -21,7 +21,7 @@ function ScheduleViewer() {
   })
 
   // TODO: change api endpoint and set data to the result
-  api.get("/users/2")
+  api.get("/users/" + scheduleId)
       .then(res => {
           let final_data = [
             {

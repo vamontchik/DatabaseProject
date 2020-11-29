@@ -1,8 +1,13 @@
 import React from 'react';
 import { Button, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
 import './ScheduleConfirmation.css'
+import axios from 'axios'
 
 export default function ScheduleConfirmation(props) {
+
+    const api = axios.create({
+        baseURL: `https://reqres.in/api`
+    })
 
     const confirmSchedule = () => {
         var retAr = []
@@ -16,9 +21,9 @@ export default function ScheduleConfirmation(props) {
         createSchedule(retAr)
     }
 
-    //todo
+    //TODO: redirect to schedule when retrieve the oid
     const createSchedule = (scheduleArray) => {
-        
+        api.post('/create/mongodb', scheduleArray).then()
     }
 
     const mapOfProps = props.data.map((item) => {
