@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Generator.css';
 import {Form, Button, Row, Col, Container, Badge, Tooltip, OverlayTrigger} from 'react-bootstrap'
 import InputSlider from './InputSlider'
@@ -68,7 +68,7 @@ function Generator() {
 
     api.post("/schedule/mongodb", scheduleJSON)
       .then(res => {
-          console.log(res)
+          history.push("/schedule/" + res.data.oid);
       }).catch(error=>{
           console.log("Error");
       });
