@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './ScheduleViewer.css';
 import Schedule from './Schedule';
 import {Container, Tooltip, OverlayTrigger} from 'react-bootstrap';
@@ -6,7 +6,7 @@ import axios from 'axios';
 import FileCopy from '@material-ui/icons/FileCopy';
 
 import {
-  useParams, useHistory
+  useParams
 } from "react-router-dom";
 
 function ScheduleViewer() {
@@ -19,9 +19,10 @@ function ScheduleViewer() {
   const api = axios.create({
     baseURL: "http://localhost:5000/"
   })
-
+  
   // TODO: change api endpoint and set data to the result
-  api.post("/search/mongodb",
+  useEffect(() => {
+    api.post("/search/mongodb",
     {
       oid: scheduleId,
     })
@@ -32,6 +33,8 @@ function ScheduleViewer() {
            console.log("Error");
            setData(undefined);
        });
+       // eslint-disable-next-line
+  }, [])
 
   const copyURL = () => {
     navigator.clipboard.writeText(url);

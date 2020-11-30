@@ -3,7 +3,6 @@ import './ScheduleItem.css';
 import {Accordion, Card, Container, Button, Row, Col} from 'react-bootstrap'
 import CourseDetailInnerView from './CourseDetailInnerView';
 import Favorite from '@material-ui/icons/Favorite';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import axios from 'axios'
 
 function ScheduleItem(props) {
@@ -13,6 +12,7 @@ function ScheduleItem(props) {
     const [liked, setLiked] = useState(data.liked);
 
     // TODO: change api base url
+    // eslint-disable-next-line
     const api = axios.create({
       baseURL: `https://reqres.in/api`
     })
@@ -49,6 +49,7 @@ function ScheduleItem(props) {
 
                 <Col xs={2}>
                   <Button active variant="outline-primary" className="like-button text-center" style={{ backgroundColor:"darkblue"}} block onClick={handleLike}>
+                    {/* eslint-disable-next-line*/}
                     <Favorite color={liked == 1 ? "secondary" : ""}></Favorite>
                   </Button>
                 </Col>

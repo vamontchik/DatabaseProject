@@ -3,10 +3,8 @@ import {FormControl, Button, Row, Col, Container} from 'react-bootstrap'
 import './ScheduleEntry.css';
 import ScheduleViewer from './ScheduleViewer'
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   useRouteMatch,
   useHistory
 } from "react-router-dom";
@@ -22,6 +20,9 @@ function ScheduleEntry() {
   }
 
   const redirect = () => {
+    if (scheduleId.contains('/')) {
+      return
+    }
     if (scheduleId) {
         history.push('/schedule/' + scheduleId);
     }

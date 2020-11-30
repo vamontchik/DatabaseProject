@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import './Generator.css';
-import {Form, Button, Row, Col, Container, Badge, Tooltip, OverlayTrigger} from 'react-bootstrap'
+import {Button, Row, Col, Container, Badge, Tooltip, OverlayTrigger} from 'react-bootstrap'
 import InputSlider from './InputSlider'
-import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import axios from 'axios';
@@ -69,10 +68,12 @@ function Generator() {
     api.post("/schedule/mongodb", scheduleJSON)
       .then(res => {
           console.log(res)
+          history.push('/schedule/' + res.data.oid)
       }).catch(error=>{
           console.log("Error");
       });
       console.log(scheduleJSON);
+    
   };
 
   return (

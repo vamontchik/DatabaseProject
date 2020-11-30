@@ -20,7 +20,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from "react-router-dom";
 
 function Main() {
@@ -36,8 +37,9 @@ function Main() {
         </Nav>
       </Navbar>
       <Switch>
+        <Redirect exact from="/" to="/viewer" />
         <Route path="/viewer">
-          <GeneralDataTable title={"Course Viewer"} editable={false} selection={true} col={colJSON.SmallCourseSectionTable} extension={'/CourseSection'}/>
+          <GeneralDataTable title={"Course Viewer"} editable={false} selection={true} col={colJSON.SmallCourseSectionTable} extension={'/allsql'}/>
         </Route>
         <Route path="/admin">
           <Admin editable={true} selection={false}/>
@@ -51,10 +53,6 @@ function Main() {
       </Switch>
     </Router>
   )
-}
-
-function Home() {
-  return(<div></div>)
 }
 
 ReactDOM.render(<Main />,

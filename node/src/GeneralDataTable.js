@@ -69,6 +69,7 @@ export default function GeneralDataTable(props) {
 
   useEffect(() => {
     getUpdate()
+    // eslint-disable-next-line
   }, [])
 
   const getUpdate = () => {
