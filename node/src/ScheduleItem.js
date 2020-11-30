@@ -22,8 +22,10 @@ function ScheduleItem(props) {
     const handleLike = () => {
       //toggle like
       console.log(liked);
-      setLiked(!liked);
-      console.log(liked);
+      let liked_copy = (liked == 1) ? 0 : 1;
+      data.liked = liked_copy;
+      console.log(liked_copy);
+      setLiked(liked_copy);
 
       console.log(data)
 
@@ -35,7 +37,8 @@ function ScheduleItem(props) {
             console.log(res);
 
         }).catch(error=>{
-            setLiked(!liked);
+            let liked_revert = (liked_copy == 1) ? 0 : 1;
+            setLiked(liked_revert);
             console.log("Error");
         });
     };
