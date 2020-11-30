@@ -392,10 +392,14 @@ def _create_document_in_mongodb(schedule):
         if not success:
             return err_msg
 
-        # construct json object to contain ONLY primary keys
+        # construct json object to contain ONLY primary keys AND like status field
         constructed = {}
         for item in format_list_inner:
             constructed[item] = class_json_obj[item]
+
+        #add on "liked" status field
+        #initially starts unliked
+        constructed["liked"] = 0
 
         list_of_constructed.append(constructed)
 
@@ -501,6 +505,10 @@ def search_from_mongodb():
 
             if len(fetched_records) != 1:
                 return make_response(jsonify({'message':'something terrible has occured...'}), 400)
+
+            #add "liked" field from MongoDB
+            #this is extremely jank and should probably be cleaned up in the future <3
+            fetched_records[0]["liked"] = class_obj["liked"]
             all_records.append(fetched_records[0])
         except mysql.connector.Error as e:
             print(e)
@@ -531,10 +539,14 @@ def create_document_in_mongodb():
         if not success:
             return err_msg
 
-        # construct json object to contain ONLY primary keys
+        # construct json object to contain ONLY primary keys AND liked status field
         constructed = {}
         for item in format_list_inner:
             constructed[item] = class_json_obj[item]
+
+        #add on "liked" status field
+        #initially starts with 0 likes
+        constructed["liked"] = 0
 
         list_of_constructed.append(constructed)
 
@@ -553,6 +565,74 @@ def create_document_in_mongodb():
     # print('response_body: {}'.format(response_body))
 
     return make_response(response_body, 200)
+
+#method for liking a class inside of a Schedule in MongoDB and updating like count of course in SQL db
+@app.route('/like/ScheduleItem', methods=['POST'])
+def toggle_class_like():
+    if not request.is_json:
+        return make_response(jsonify({'message': 'Request body must be JSON'}), 400)
+
+    item_req = request.get_json()
+
+    print(item_req)
+
+    format_list = ['oid', 'instructorName', 'subject', 'number']
+    err_msg, success = verify_json_format(format_list, item_req, 'mongodb')
+    if not success:
+        return err_msg
+
+    oid_str = item_req['oid']
+
+    # search for this document in MongoDB
+    try:
+        oid_obj = ObjectId(oid_str)
+    except Exception as e: # Note: specific bson error can't be used b/c of package name clash???
+        return make_response(jsonify({'message':'invalid oid passed in'}), 400)
+
+    result_obj = db.keys.find_one({'_id': oid_obj})
+    if result_obj is None:
+        err_msg = 'no document found with oid={}'.format(oid_str)
+        return make_response(jsonify({'message': err_msg}), 400)
+
+    if 'classes' not in result_obj:
+        err_msg = 'malformed document in mongodb with oid={}'.format(oid_str)
+        return make_response(jsonify({'message': err_msg}), 400)
+
+    #document found, attempt to change like field for the class
+    #TODO: CHECK IF THIS CLASS ACTUALLY EXISTS IN THIS DOCUMENT OR SOME WACKY ERRORS COULD COME UP
+    try:
+        collection = db["keys"]
+        oid_obj = ObjectId(oid_str)
+        collection.update_one({"_id": oid_obj, "classes.instructorName": item_req["instructorName"], \
+            "classes.subject": item_req["subject"], "classes.number": item_req["number"]}, {"$set": {"classes.$.liked": item_req["liked"]}})
+    except Exception as e:
+        err_msg = 'Encountered error when attempting to like/unlike a class in MongoDB.'.format(oid_str)
+        return make_response(jsonify({'message': err_msg}), 400)
+
+    #increment or decrement number of likes for this class in SQL db
+    conditional_str = build_conditional_str_update(item_req)
+    like_modifier_str = "+ 1" if item_req["liked"] == 1 else "- 1"
+
+    sql_query = '''
+        UPDATE CourseSection
+        SET likes = likes {}
+        WHERE {};
+    '''.format(like_modifier_str, conditional_str)
+
+    print(sql_query)
+
+    try:
+        cursor = cnx.cursor(dictionary=True)
+        cursor.execute(sql_query)
+        cnx.commit()
+    except mysql.connector.Error as e:
+        print(e)
+        return make_response(jsonify({'message':'Encountered error when attempting to like/unlike a class in MySQL DB'}), 400)
+    finally:
+        if cnx.is_connected():
+            cursor.close()
+
+    return make_response(jsonify({'message': "Successfully toggled like field."}), 200)
 
 ###
 ### /create endpoints

@@ -19,7 +19,7 @@ function ScheduleViewer() {
   const api = axios.create({
     baseURL: "http://localhost:5000/"
   })
-  
+
   // TODO: change api endpoint and set data to the result
   useEffect(() => {
     api.post("/search/mongodb",
@@ -49,7 +49,7 @@ function ScheduleViewer() {
           </FileCopy>
         </OverlayTrigger>
       </h3>
-      <Schedule data={data}></Schedule>
+      <Schedule data={data} scheduleId={scheduleId}></Schedule>
     </Container>
   );
 }

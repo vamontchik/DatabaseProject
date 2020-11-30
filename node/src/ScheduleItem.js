@@ -8,29 +8,36 @@ import axios from 'axios'
 function ScheduleItem(props) {
 
     let data = props.data;
+    data.oid = props.scheduleId;
 
     const [liked, setLiked] = useState(data.liked);
 
     // TODO: change api base url
     // eslint-disable-next-line
     const api = axios.create({
-      baseURL: `https://reqres.in/api`
+      baseURL: "http://localhost:5000/"
     })
 
     // TODO: implement and link like backend call
     const handleLike = () => {
-      // api call
+      //toggle like
+      console.log(liked);
       setLiked(!liked);
-      // TODO: use API call to update the 'liked' field of a course in a schedule
-      /*
-        axios.post(baseURL + extension, scheduleJSON)
-          .then(res => {
-              // redirect to schedule URL
-          }).catch(error=>{
-              console.log("Error");
-          });
-      */
+      console.log(liked);
 
+      console.log(data)
+
+      // api call
+      console.log("This ran");
+
+      api.post("/like/ScheduleItem", data)
+        .then(res => {
+            console.log(res);
+
+        }).catch(error=>{
+            setLiked(!liked);
+            console.log("Error");
+        });
     };
 
     return (

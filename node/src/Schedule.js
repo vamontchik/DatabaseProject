@@ -13,7 +13,7 @@ function Schedule(props) {
   }
 
   const scheduleItems = props.data.map((item) => {
-      return <ScheduleItem data={item}></ScheduleItem>
+      return <ScheduleItem data={item} scheduleId={props.scheduleId}></ScheduleItem>
   });
 
   return (
