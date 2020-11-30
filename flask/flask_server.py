@@ -171,6 +171,9 @@ def numMatchingReqs(criteria_json, course, should_edit):
 def maxCoursesGen(criteria_json):
     rows = executeGenericGenQuery(criteria_json, PriorityType.MinCredHrs)
 
+    if rows == None:
+        return None
+
     #This is approximate
     #At every decision point, this algorithm chooses the course that
     #matches the smallest number requirements (its a greedy algorithm)
@@ -215,6 +218,9 @@ def maxCoursesGen(criteria_json):
 def minCoursesGen(criteria_json):
     rows = executeGenericGenQuery(criteria_json, PriorityType.MinCredHrs)
 
+    if rows == None:
+        return None
+
     #This is approximate
     #At every decision point, this algorithm chooses the course that
     #matches the largest number requirements (its a greedy algorithm)
@@ -252,6 +258,9 @@ def minCoursesGen(criteria_json):
 def maxGPAGen(criteria_json):
     rows = executeGenericGenQuery(criteria_json, PriorityType.MaxGPA)
 
+    if rows == None:
+        return None
+
     #Maximize the average GPA of all the courses selected for the schedule
     #This solution is approximate
     num_reqs = calcReqSum(criteria_json)
@@ -276,6 +285,9 @@ def maxGPAGen(criteria_json):
 #FOR BOTH METHODS INTO ONE METHOD
 def maxLikesGen(criteria_json):
     rows = executeGenericGenQuery(criteria_json, PriorityType.MaxLikes)
+
+    if rows == None:
+        return None
 
     #Maximize the number of likes of all the courses selected for the schedule
     #This solution is approximate
@@ -368,8 +380,10 @@ def schedule_gen():
 #This isn't made to replace the create_document_in_mongodb method that Vlad made
 #It's just for internal use with the schedule generation methods
 def _create_document_in_mongodb(schedule):
-    if schedule == None:
+    if schedule == None or len(schedule) == 0:
         return make_response(jsonify({'message': 'Unable to generate a schedule given the constraints supplied. Try other constraints.'}), 400)
+
+    print(schedule)
 
     format_list_inner = ['instructorName', 'subject', 'number']
     list_of_constructed = []
@@ -459,19 +473,37 @@ def search_from_mongodb():
         if not success:
             return err_msg
 
-        conditional_str = build_conditional_str_update(class_obj) # NOTE: the delete one could work here too, oops
-        sql_query = 'SELECT * FROM CourseSection WHERE {}'.format(conditional_str)
+        #I would build this with the build_conditional_str_update method, but we have to use table alias names here
+        #here so I can't pass in stuff like alias.instructorName for example
+        number_value = str(class_obj['number'])
+        subject = "'{}'".format(class_obj['subject'])
+        instructor_name = "'{}'".format(class_obj['instructorName'])
 
-        # print('sql_query: {}'.format(sql_query))
+        conditional_str = 'c.number= {0} AND c.subject= {1} AND c.instructorName= {2}'.format(number_value, subject, instructor_name)
+
+        sql_query = '''
+            SELECT *
+            FROM CourseSection c
+            JOIN GradeDistribution g ON c.instructorName = g.instructorName AND c.subject = g.subject AND c.number = g.number
+            JOIN Instructor i ON c.instructorName = i.instructorName
+            JOIN GenEd ge ON c.subject = ge.subject AND c.number = ge.number
+            WHERE {};
+        '''.format(conditional_str)
+
+        print(sql_query)
 
         try:
             cursor = cnx.cursor(dictionary=True)
             cursor.execute(sql_query)
             fetched_records = cursor.fetchall()
+
+            print(fetched_records)
+
             if len(fetched_records) != 1:
                 return make_response(jsonify({'message':'something terrible has occured...'}), 400)
             all_records.append(fetched_records[0])
         except mysql.connector.Error as e:
+            print(e)
             return make_response(jsonify({'message':'an error occured while accesing mySQL DB'}), 400)
         finally:
             if cnx.is_connected():
@@ -672,7 +704,6 @@ def build_conditional_str_update(req):
     subject = "'{}'".format(req['subject'])
     instructor_name = "'{}'".format(req['instructorName'])
     return 'number= {0} AND subject= {1} AND instructorName= {2}'.format(number_value, subject, instructor_name)
-
 
 def execute_generic_update_query(sql_query):
     try:
