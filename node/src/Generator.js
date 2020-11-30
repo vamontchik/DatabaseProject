@@ -70,7 +70,7 @@ function Generator() {
           console.log(res)
           history.push('/schedule/' + res.data.oid)
       }).catch(error=>{
-          console.log("Error");
+          alert("No schedule matches the constraints given.")
       });
       console.log(scheduleJSON);
 
