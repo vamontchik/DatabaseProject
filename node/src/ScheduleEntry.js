@@ -3,10 +3,8 @@ import {FormControl, Button, Row, Col, Container} from 'react-bootstrap'
 import './ScheduleEntry.css';
 import ScheduleViewer from './ScheduleViewer'
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   useRouteMatch,
   useHistory
 } from "react-router-dom";
@@ -17,8 +15,13 @@ function ScheduleEntry() {
   const history = useHistory();
 
   const [scheduleId, setScheduleId] = useState("");
+
   const setInput = (e) => {
-      setScheduleId(e.target.value)
+    const re = /^[0-9A-Za-z\b]+$/;
+
+    if (e.target.value === '' || re.test(e.target.value)) {
+       setScheduleId(e.target.value)
+     }
   }
 
   const redirect = () => {

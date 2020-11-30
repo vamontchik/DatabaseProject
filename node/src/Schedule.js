@@ -4,7 +4,7 @@ import {Container} from 'react-bootstrap'
 
 function Schedule(props) {
 
-  if (props.data == undefined) {
+  if (props.data === undefined) {
     return (
       <Container className="text-center">
         <h3>No schedule data found.</h3>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, FormControl, Row, Col} from 'react-bootstrap'
+import {Form, Row, Col} from 'react-bootstrap'
 import Slider from '@material-ui/core/Slider'
 
 function InputSlider(props) {

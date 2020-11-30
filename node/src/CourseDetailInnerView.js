@@ -59,7 +59,6 @@ function CourseDetailInnerView(props) {
       <p>{"Title: " + data.title}</p>
       <p>{"Credit Hours: " + data.creditHours}</p>
       <p>{"Instructor Name: " + data.instructorName}</p>
-      <p>{"Instructor Rating: " + "10"}</p>
       <p>{"Term: " + data.term}</p>
       <p>{"Year: " + data.year} </p>
       <p>{"Number of Students: " + data.numStudents }</p>

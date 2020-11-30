@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Generator.css';
-import {Form, Button, Row, Col, Container, Badge, Tooltip, OverlayTrigger} from 'react-bootstrap'
+import {Button, Row, Col, Container, Badge, Tooltip, OverlayTrigger} from 'react-bootstrap'
 import InputSlider from './InputSlider'
-import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import axios from 'axios';
@@ -73,6 +72,7 @@ function Generator() {
           console.log("Error");
       });
       console.log(scheduleJSON);
+
   };
 
   return (
@@ -89,7 +89,7 @@ function Generator() {
         </Col>
       </Row>
 
-      <InputSlider title="Minimum Average GPA" value={minAvgGpa} setValue={setMinAvgGpa} min={0} max={4} step={0.25}/>
+      <InputSlider title="Minimum Average GPA" value={minAvgGpa} setValue={setMinAvgGpa} min={0} max={3.75} step={0.25}/>
 
       <InputSlider title="Advanced Composition" value={ACP_ACP} setValue={setACP_ACP} min={0} max={3} step={1}/>
 
