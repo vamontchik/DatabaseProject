@@ -380,8 +380,10 @@ def schedule_gen():
 #This isn't made to replace the create_document_in_mongodb method that Vlad made
 #It's just for internal use with the schedule generation methods
 def _create_document_in_mongodb(schedule):
-    if schedule == None:
+    if schedule == None or len(schedule) == 0:
         return make_response(jsonify({'message': 'Unable to generate a schedule given the constraints supplied. Try other constraints.'}), 400)
+
+    print(schedule)
 
     format_list_inner = ['instructorName', 'subject', 'number']
     list_of_constructed = []
