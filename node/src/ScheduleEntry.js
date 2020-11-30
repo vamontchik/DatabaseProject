@@ -15,14 +15,16 @@ function ScheduleEntry() {
   const history = useHistory();
 
   const [scheduleId, setScheduleId] = useState("");
+
   const setInput = (e) => {
-      setScheduleId(e.target.value)
+    const re = /^[0-9A-Za-z\b]+$/;
+
+    if (e.target.value === '' || re.test(e.target.value)) {
+       setScheduleId(e.target.value)
+     }
   }
 
   const redirect = () => {
-    if (scheduleId.contains('/')) {
-      return
-    }
     if (scheduleId) {
         history.push('/schedule/' + scheduleId);
     }
