@@ -73,7 +73,7 @@ function Generator() {
           console.log("Error");
       });
       console.log(scheduleJSON);
-    
+
   };
 
   return (
@@ -90,7 +90,7 @@ function Generator() {
         </Col>
       </Row>
 
-      <InputSlider title="Minimum Average GPA" value={minAvgGpa} setValue={setMinAvgGpa} min={0} max={4} step={0.25}/>
+      <InputSlider title="Minimum Average GPA" value={minAvgGpa} setValue={setMinAvgGpa} min={0} max={3.75} step={0.25}/>
 
       <InputSlider title="Advanced Composition" value={ACP_ACP} setValue={setACP_ACP} min={0} max={3} step={1}/>
 
