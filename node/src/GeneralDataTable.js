@@ -153,8 +153,10 @@ export default function GeneralDataTable(props) {
   }
 
   const showCourseModalWrap = (rowData) => {
-    setCourseModalData(rowData)
-    setShowCourseModal(true)
+    if (props.selection) {
+      setCourseModalData(rowData)
+      setShowCourseModal(true)
+    }
   }
 
   const showConfirmationModal = (e, rowData) => {

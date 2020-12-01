@@ -286,6 +286,8 @@ def maxGPAGen(criteria_json):
 def maxLikesGen(criteria_json):
     rows = executeGenericGenQuery(criteria_json, PriorityType.MaxLikes)
 
+    print(rows)
+
     if rows == None:
         return None
 
