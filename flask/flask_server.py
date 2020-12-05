@@ -281,8 +281,6 @@ def maxGPAGen(criteria_json):
     #case where we couldn't make a schedule given the constraints
     return None
 
-#TODO: I COPY PASTED THIS CODE FROM THE METHOD ABOVE. THAT'S NOT GOOD. SHOULD CONSOLIDATE THE CODE
-#FOR BOTH METHODS INTO ONE METHOD
 def maxLikesGen(criteria_json):
     rows = executeGenericGenQuery(criteria_json, PriorityType.MaxLikes)
 
@@ -508,8 +506,6 @@ def search_from_mongodb():
             if len(fetched_records) != 1:
                 return make_response(jsonify({'message':'something terrible has occured...'}), 400)
 
-            #add "liked" field from MongoDB
-            #this is extremely jank and should probably be cleaned up in the future <3
             fetched_records[0]["liked"] = class_obj["liked"]
             all_records.append(fetched_records[0])
         except mysql.connector.Error as e:
@@ -601,7 +597,6 @@ def toggle_class_like():
         return make_response(jsonify({'message': err_msg}), 400)
 
     #document found, attempt to change like field for the class
-    #TODO: CHECK IF THIS CLASS ACTUALLY EXISTS IN THIS DOCUMENT OR SOME WACKY ERRORS COULD COME UP
     try:
         collection = db["keys"]
         oid_obj = ObjectId(oid_str)
